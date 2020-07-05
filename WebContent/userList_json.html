@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>RESTful web service client(JSON)</title>
+
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+	rel="stylesheet">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		userList();
+		userSelect();
+		userDelete();
+		userInsert();
+		userUpdate();
+		init();
+	});
+
+	function init() {
+		$('#btnInit').on('click', function() {
+			$('#form1').each(function() {
+				this.reset();
+			});
+		});
+	}
+
+	function userDelete() {
+		$('body').on('click', '#btnDelete', function() {
+			var userId = $(this).closest('tr').find('#hidden_userId').val();
+			var result = confirm(userId + ' 사용자를 정말로 삭제하시겠습니까?');
+			if (result) {
+				$.ajax({
+					url : 'users/' + userId,
+					type : 'DELETE',
+					contentType : 'appliaction/json?charset=utf-8',
+					dataType : 'json',
+					error : function(xhr, status, msg) {
+						console.log('상태값 :' + status + 'Http에러메시지 :' + msg);
+					},
+					success : function(xhr) {
+						console.log(xhr.result);
+						userList();
+					}
+				});
+			}
+		});
+	}
+
+	function userSelect() {
+		$('body').on('click', '#btnSelect', function() {
+			var userId = $(this).closest('tr').find('#hidden_userId').val();
+			$.ajax({
+				url : 'users/' + userId,
+				type : 'GET',
+				contentType : 'application/json;charset=utf-8',
+				dataType : 'json',
+				error : function(xhr, status, msg) {
+					alert("상태값 :" + status + " Http에러메시지 :" + msg);
+				},
+				success : userSelectResult
+			});
+		});
+	}
+
+	function userSelectResult(xhr) {
+		var user = xhr.data;
+		$('input:text[name="userId"]').val(user.userId);
+		$('input:text[name="name"]').val(user.name);
+		$('input:radio[name="gender"][value="' + user.gender + '"]').prop(
+				'checked', true);
+		$('select[name="city"]').val(user.city).attr("selected", "selected");
+	}
+
+	function userUpdate() {
+		$('#btnUpdate').on('click', function() {
+			var userId = $('input:text[name="userId"]').val();
+			var name = $('input:text[name="name"]').val();
+			var gender = $('input:radio[name="gender"]:checked').val();
+			var city = $('select[name="city"]').val();
+			$.ajax({
+				url : "users",
+				type : 'PUT',
+				dataType : 'json',
+				data : JSON.stringify({
+					userId : userId,
+					name : name,
+					gender : gender,
+					city : city
+				}),
+				contentType : 'application/json',
+				mimeType : 'application/json',
+				success : function(data) {
+					userList();
+				},
+				error : function(xhr, status, message) {
+					alert(" status: " + status + " er:" + message);
+				}
+			});
+		});
+	}
+
+	function userInsert() {
+		$('#btnInsert').on('click', function() {
+			var userId = $('input:text[name="userId"]').val();
+			var name = $('input:text[name="name"]').val();
+			var gender = $('input:radio[name="gender"]:checked').val();
+			var city = $('select[name="city"]').val();
+			$.ajax({
+				url : "users",
+				type : 'POST',
+				dataType : 'json',
+				data : JSON.stringify({
+					userId : userId,
+					name : name,
+					gender : gender,
+					city : city
+				}),
+				contentType : 'application/json',
+				mimeType : 'application/json',
+				success : function(response) {
+					if (response.result == true) {
+						userList();
+					}
+				},
+				error : function(xhr, status, message) {
+					alert(" status: " + status + " er:" + message);
+				}
+			});
+		});
+	}
+
+	function userList() {
+		$.ajax({
+			url : 'users',
+			type : 'GET',
+			contentType : 'application/json;charset=utf-8',
+			dataType : 'json',
+			error : function(xhr, status, msg) {
+				alert("상태값 :" + status + " Http에러메시지 :" + msg);
+			},
+			success : userListResult
+		});
+	}
+
+	function userListResult(xhr) {
+		console.log(xhr.data);
+		$("tbody").empty();
+		$.each(xhr.data, function(idx, item) {
+			$('<tr>').append($('<td>').html(item.userId)).append(
+					$('<td>').html(item.name)).append(
+					$('<td>').html(item.gender)).append(
+					$('<td>').html(item.city)).append(
+					$('<td>').html('<button id=\'btnSelect\'>조회</button>'))
+					.append(
+							$('<td>').html(
+									'<button id=\'btnDelete\'>삭제</button>'))
+					.append(
+							$('<input type=\'hidden\' id=\'hidden_userId\'>')
+									.val(item.userId)).appendTo('tbody');
+		});
+	}
+</script>
+</head>
+<body>
+	<div class="container">
+		<form id="form1" class="form-horizontal">
+			<h2>user register or update</h2>
+			<div class="form-group">
+				<label>id: </label> <input type="text" class="form-control"
+					name="userId">
+			</div>
+			<div class="form-group">
+				<label>name: </label> <input type="text" class="form-control"
+					name="name">
+			</div>
+			<div class="form-group">
+				<label>gender: </label>
+				<div class="radio">
+					<label> <input type="radio" name="gender" value="남">남
+					</label>
+				</div>
+				<div class="radio">
+					<label> <input type="radio" name="gender" value="여">여
+					</label>
+				</div>
+				<div class="form-group">
+					<label>city: </label> <select class="form-control" name="city">
+						<option value="서울">서울</option>
+						<option value="경기">경기</option>
+						<option value="광주">광주</option>
+						<option value="부산">부산</option>
+						<option value="제주">제주</option>
+					</select>
+				</div>
+				<div class="btn-group">
+					<input type="button" class="btn btn-primary" value="register"
+						id="btnInsert"> <input type="button"
+						class="btn btn-primary" value="update" id="btnUpdate"><input
+						type="button" class="btn btn-primary" value="init" id="btnInit">
+				</div>
+			</div>
+			<div class="form-group">
+				<label>id: </label> <input type="text" class="form-control"
+					name="userId">
+			</div>
+		</form>
+	</div>
+	<hr>
+	<div class="container">
+		<h2>user list</h2>
+		<table class="table text-center">
+			<thead>
+				<tr>
+					<th class="text-center">id</th>
+					<th class="text-center">name</th>
+					<th class="text-center">gender</th>
+					<th class="text-center">city</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+</body>
+</html>
