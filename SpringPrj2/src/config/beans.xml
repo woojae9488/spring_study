@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<!-- MapperScanner Configuration -->
+	<!-- <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> -->
+	<!-- <property name="basePackage" value="myspring.user.dao" /> -->
+	<!-- <property name="annotationClass" -->
+	<!-- value="myspring.user.dao.MyMapper" /> -->
+	<!-- </bean> -->
+
+	<!-- Mapper Configuration -->
+	<bean id="userMapper"
+		class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="myspring.user.dao.UserMapper" />
+		<property name="sqlSessionTemplate" ref="sqlSession" />
+	</bean>
+
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation"
+			value="classpath:config/SqlMapConfig.xml" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:config/User.xml</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="sqlSession"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="performanceTraceAdvice"
+		class="myspring.aop.xml.PerformanceTraceAdvice"></bean>
+
+	<aop:config>
+		<aop:aspect id="traceAspect" ref="performanceTraceAdvice">
+			<aop:around method="trace"
+				pointcut="execution(public * myspring.user.service..*.*(..))" />
+		</aop:aspect>
+	</aop:config>
+
+	<context:property-placeholder
+		location="classpath:/config/value.properties" />
+
+	<context:component-scan
+		base-package="myspring.user,myspring.aop.annot" />
+
+	<aop:aspectj-autoproxy />
+
+	<!-- DataSource Configuration -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="${db.driverClass}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+	</bean>
+
+	<bean id="hello" class="myspring.di.xml.Hello">
+		<constructor-arg index="0" value="Spring" />
+		<constructor-arg index="1" ref="stringPrinter" />
+		<property name="names">
+			<list>
+				<value>${value1}</value>
+				<value>${value2}</value>
+				<value>${value3}</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- <bean id="hello" class="myspring.di.xml.Hello"> -->
+	<!-- <property name="name" value="Spring"/> -->
+	<!-- <property name="printer" ref="stringPrinter"/> -->
+	<!-- </bean> -->
+
+	<bean id="stringPrinter" class="myspring.di.xml.StringPrinter" />
+	<bean id="consolePrinter" class="myspring.di.xml.ConsolePrinter" />
+</beans>
