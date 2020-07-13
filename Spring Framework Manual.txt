@@ -1,0 +1,1363 @@
+##################################################################################################
+# 문서의 서식
+##################################################################################################
+
+- 내용의 순서 => [-] -> {=>} -> [+] -> {->} -> [*] -> {/>} -> [^] -> {.>} -> [~] -> {>}
+- 문단의 끝 => \n
+- 명령어의 삽입
+    + 다음 줄에 서식문자와 함께 기입
+    + 명령어에서 변수 삽입 시 {이름}으로 기입
+- 파일 또는 긴 명령어의 행 무시 삽입 => %%%%%%%%%%(이름) 내용 %%%%%%%%%%
+    + 이어지는 문장의 표시 -> \
+    + 생략 -> .....
+
+##################################################################################################
+# Framework 개념
+##################################################################################################
+
+- SW 재사용 방안들
+    + 종류 -> Copy & Paste / Method(Function) / Class(Inheritance) / AOP
+    + AOP(Aspect Oriented Programming)
+        * 관심의 분리(Seperation of Concerns)
+        * OOP를 더욱 OOP답게 만들어 줄 수 있다.
+        * OOP 뿐만 아니라 기존의 절차적 프로그래밍에도 적용될 수 있다.
+        * 핵심관심모듈과 횡단관심모듈을 분리시키고 위빙(Weaving) 작업을 통해 엮어지게 만든다.
+
+- 디자인 패턴과 프레임워크의 관련성
+    + 디자인 패턴 -> 재사용하기 좋은 형태로 특정 규약을 묶어서 정리한 것이다.
+        * 사용 이유
+            ^ 요구사항 변경에 따른 Source Code 변경을 최소화한다.
+            ^ 범용적인 코딩 스타일을 적용하게 된다.
+            ^ 직관적인 코드를 사용하게 된다.
+    + 프레임워크 -> 비기능적 요구사항을 만족하고 안전하게 실행되도록 제어해주는 Library 덩어리
+        * 사용 이유
+            ^ 비기능적 요소들을 개발 단계마다 구현해야 하는 불합리함을 극복해준다.
+            ^ 기능적인 요구사항에 집중할 수 있도록 해준다.
+            ^ 반복적으로 발견되는 문제를 해결하기 위한 특화된 Solution을 제공한다.
+        * 라이브러리와 프레임워크의 차이
+            ^ 라이브러리는 개발자가 라이브러리를 호출하므로 주도권이 개발자에게 있다.
+            ^ 프레임워크는 개발자의 코드를 프레임워크가 호출하므로 주도권이 프레임워크에게 있다.
+    + 관련성
+        * 디자인 패턴은 구조적인 가이드라인이 되어 줄 수는 있지만 기반 코드를 제공하지는 않는다.
+        * 프레임워크는 기반 클래스 라이브러리를 제공해서 구조적인 틀과 구현코드를 함께 제공한다.
+        * 디자인 패턴은 프레임워크의 핵심적인 특징이지만 프레임워크는 디자인 패턴이 아니다.
+        * 개발자는 프레임워크의 기반 코드를 확장하면서 자연스럽게 디자인 패턴을 적용하게 된다.
+
+- 프레임워크의 구성요소와 종류
+    + 구성요소 -> IoC / Class Library / Design Pattern
+    + 프레임워크는 디자인 패턴과 그것이 적용된 기반 라이브러리의 결합으로 이해할 수 있다.
+    + IoC(Inversion of Control) -> 인스턴스 생명주기 관리를 개발자가 아닌 컨테이너가 대신 한다.
+        * 프레임워크의 동작에서 제어 흐름이 일반적인 프로그램 흐름과 반대로 동작한다.
+        * Spring 컨테이너는 IoC를 지원하며 메타데이터를 통해 beans를 관리하고 앱을 형성한다.
+        * Spring 컨테이너는 관리되는 beans들을 의존성 주입(DI)을 통해 IoC를 지원한다.
+    + 종류
+        * 웹(MVC) /> Spring MVC, Struts2, Webwork, PlayFramework
+        * OR(Object-Relational) 매핑 /> MyBatis, Hibernate, JPA, Spring JDBC
+        * AOP(Aspect Oriented Programming) /> Spring AOP, AspectJ, JBoss AOP
+        * DI(Dependency Injection) /> Spring DI, Google Guice
+        * Build와 Library 관리 /> Ant + Ivy, Maven, Gradle
+        * 단위 테스트 /> jUnit, TestNG, Cactus
+        * JavaScript /> jQuery, AngularJS, Node.js
+
+##################################################################################################
+# 기본 환경설정
+##################################################################################################
+
+- JDK 8 설치 및 API 문서
+    + 설치 -> https://www.oracle.com/kr/java/technologies/javase/javase-jdk8-downloads.html
+    + API 문서 -> https://docs.oracle.com/javase/8/docs/api/
+
+- STS 설치 및 Spring API 문서
+    + STS 4 설치 -> https://spring.io/tools
+    + Spring API 문서 -> https://docs.spring.io/spring/docs/5.2.7.RELEASE/javadoc-api/
+    + STS 3 기능들 추가 -> 상단 메뉴 Help > Eclipse Marketplace > sts 검색 > Add-On 설치
+    + 인코딩 설정
+        * 상단 메뉴 Windows > Preferences > Web > CSS, HTML, JSP Files > Encoding 변경
+        * 상단 메뉴 Windows > Preferences > General > Workspace > Text file encoding 변경
+
+- Tomcat 설치
+    + Tomcat 8.5 설치 -> https://tomcat.apache.org/download-80.cgi#8.5.57
+    
+- MySQL 설치
+    + https://dev.mysql.com/downloads/mysql/
+    + 인코딩 설정
+        * MySQL 프로그램 폴더에 존재하는 my.ini 혹은 my.cnf 설정 파일을 찾는다.
+        * 설정 파일의 [client]와 [mysqld]에 각각 "default-character-set=utf8" 문장을 추가한다.
+        * 서비스를 재시작해주면 status 명령으로 인코딩이 변경된 것을 확인할 수 있다.
+
+##################################################################################################
+# Spring 프레임워크 개요
+##################################################################################################
+
+- Spring Framework의 정의
+    + Spring Framework란? -> Java 엔터프라이즈 개발용 오픈소스 경량급 앱 프레임워크
+    + Spring Framework 전략
+        * Spring 삼각형
+            ^ 엔터프라이즈 개발의 복잡함을 상대하는 Spring의 전략
+            ^ Portable Service Abstraction, DI, AOP, POJO
+        * Portable Service Abstraction(서비스 추상화) /> 기술적인 복잡함은 추상화를 통해 분리
+        * DI(Dependency Injection) /> 확장 가능한 객체를 만들고 관계는 외부에서 동적으로 설정
+        * AOP(Aspect Oriented Programming) /> 기술 관련 로직 코드를 분리해서 별도의 모듈로 관리
+        * POJO(Plain Old Java Object) /> 특정 환경과 규약에 종속되지 않고 재활용될 수 있는 객체
+
+- Spring Framework의 특징
+    + 컨테이너 역할 -> Java 객체의 LifeCycle을 관리하며 필요한 객체를 가져와 사용할 수 있다.
+    + DI 지원 -> 설정 파일이나 어노테이션을 통해서 객체 간의 의존 관계를 설정할 수 있다.
+    + AOP 지원 -> 핵심 모듈에서 공통적으로 필요로 하는 모듈들을 분리해서 적용할 수 있다.
+    + POJO 지원 -> 저장되는 Java 객체는 특정한 인터페이스나 클래스를 상속받지 않아도 된다.
+    + 트랜잭션 처리에 일관된 방법 지원 -> 어떤 트랜잭션을 사용하던 설정으로 정보를 관리한다.
+    + 영속성과 관련된 다양한 API 지원 -> DB 처리를 위한 ORM 프레임워크들과의 연동을 지원한다.
+
+- Spring Framework의 기능요소
+    + 종류 -> Spring Core, AOP, ORM, DAO, Web, Context, MVC
+    + Core -> 기본 기능을 제공하며 이 모듈의 BeanFactory는 기본 컨테이너로서 DI의 기반이다.
+    + AOP -> Aspect를 개발할 수 있는 기반을 지원한다.
+    + ORM -> 널리 사용되는 ORM 프레임워크와의 연결고리를 제공한다.
+    + DAO -> JDBC 코딩이나 예외 처리를 간편화 시켰고 트랜잭션 관리 서비스도 제공한다.
+    + Web -> 일반적인 웹 애플리케이션 개발에 필요한 기본 기능을 제공한다.
+    + Context -> Core 기능을 확장하여 국제화 메시지, 생명주기 이벤트, 유효성 검증 등을 지원한다.
+    + MVC -> 사용자 인터페이스를 애플리케이션 로직과 분리해 개발하는 경우 사용되는 패러다임이다.
+
+##################################################################################################
+# Spring 프로젝트 시작하기
+##################################################################################################
+
+- STS 소개 및 제공하는 기능
+    + STS(SpringSource Tool Suite) -> Spring 개발에 최적화 되도록 만들어진 이클립스 확장판 IDE
+    + STS가 제공하는 기능
+        * XML 설정 시 Bean 클래스 이름 자동완성
+        * XML 설정 파일 생성 위저드
+        * Bean 의존 관계 그래프
+        * AOP 적용 대상 표시
+
+- Maven과 Library 관리
+    + Maven -> 라이브러리 관리 + 빌드 툴
+    + Maven을 사용하는 이유
+        * 편리한 Dependent Library 관리(Dependency Management)
+        * 여러 프로젝트에서 프로젝트 정보나 jar 파일들을 공유하기 쉽다.
+        * 모든 프로젝트의 빌드 프로세스를 일관되게 가져갈 수 있다.
+    + Library 관리 방법
+        * Maven 이전 /> 라이브러리 다운로드 > 압축 해제 > 프로젝트에 복사 > 클래스 패스에 추가
+        * Maven 이용 /> pom.xml 파일 수정 > 빌드
+    + pom.xml -> Maven 프로젝트 설정 파일로 Project Object Model 정보를 담고 있다.
+        * 의존 관계 추가 /> https://mvnrepository.com 에서 검색 > pom.xml에 <dependency> 추가
+
+- Spring Project 작성하기
+    + Java 프로젝트 생성 -> 상단 메뉴 File > New > Java Project
+    + Maven 프로젝트로 변환 -> 프로젝트 우클릭 > Configure > Convert to Maven Project
+    + Spring 프로젝트 특징 추가 -> 프로젝트 우클릭 > Spring > Add Spring Project Nature
+
+##################################################################################################
+# IoC 컨테이너와 DI
+##################################################################################################
+
+- IoC(Inversion of Control)
+    + IoC의 개념
+        * 객체의 생성, 생명주기의 관리까지 객체에 대한 제어권이 프레임워크에게 있다.
+        * 컴포넌트 의존 관계 결정, 설정 및 생명주기를 해결하기 위한 디자인 패턴이다.
+    + IoC 컨테이너
+        * IoC 컨테이너는 객체의 생성을 책임지고 의존성을 관리한다.
+        * POJO의 생성, 초기화, 서비스, 소멸에 대한 권한을 가진다.
+        * 개발자들이 직접 POJO를 생성할 수 있지만 컨테이너에게 맡긴다.
+    + IoC의 분류
+        * DL(Dependency Lookup) /> 의존성 검색
+            ^ 저장소에 저장된 Bean에 접근하기 위해 컨테이너가 제공하는 API를 이용해 검색한다.
+            ^ 특정 컨테이너에 종속되는 API를 사용해서 자주 쓰이지 않는다.
+        * DI(Dependency Injection) /> 의존성 주입
+            ^ 각 클래스 간의 의존 관계를 설정 정보 바탕으로 컨테이너가 자동으로 연결해준다.
+            ^ Setter Injection, Constructor Injection, Method Injection 유형이 있다.
+
+- DI(Dependency Injection)
+    + 개발자들은 단지 Bean 설정 파일에서 의존 관계가 필요하다는 정보를 추가하면 된다.
+    + 객체 레퍼런스를 컨테이너로부터 주입 받아서, 실행 시 동적으로 의존 관계가 생성된다.
+    + 컨테이너가 흐름의 주체가 되어 애플리케이션 코드에 의존 관계를 주입해 주는 것이다.
+    + 장점 -> 코드의 단순화 / 컴포넌트 간의 결합도 제거
+    + DI의 유형
+        * Setter Injection /> Setter 메소드를 이용한 의존성 삽입
+        * Constructor Injection /> 생성자를 이요한 의존성 삽입
+        * Method Injection /> 일반 메소드를 이용한 의존성 삽입
+    + DI를 이용한 클래스 호출 방식
+        * 클래스는 인터페이스를 사용하게 되고 조립기에 의해 의존성을 삽입받게 된다.
+        * 구현 클래스는 인터페이스를 구현하게 되고 조립기에 의해 생성되게 된다.
+        * 조립기는 Bean 설정 파일을 읽고 구현 클래스를 생성해 의존성을 주입해 준다.
+    + Setter Injection 사용 설정
+        * 클래스의 멤버 변수들의 Setter 메소드를 모두 정의한다.
+        * Bean 설정 파일에서는 <bean> 안에 <property>로 Setter 메소드와 연결한다.
+        * 작성 예시 />
+%%%%%%%%%%(beans.xml)
+<bean id="class" class="bean.Class">
+    <!-- setValue(value) -->
+    <property name="value" value="value" />
+    <!-- setReference(reference) -->
+    <property name="reference" ref="reference" />
+</bean>
+%%%%%%%%%%
+    + Constructor Injection 사용 설정
+        * 클래스의 멤버 변수들을 매개변수로 가지는 생성자를 정의한다.
+        * Bean 설정 파일에서는 <bean> 안에 <constructor-arg>로 생성자 매개변수와 연결한다.
+        * 작성 예시 />
+%%%%%%%%%%(beans.xml)
+<bean id="class" class="bean.Class">
+    <constructor-arg index="0" value="value" />
+    <constructor-arg index="1" ref="reference" />
+</bean>
+%%%%%%%%%%
+
+- Spring DI 컨테이너
+    + Spring DI 컨테이너가 관리하는 객체를 Bean이라고 한다.
+    + Bean들을 관리한다는 의미로 컨테이너를 BeanFactory라고 부른다.
+    + BeanFactory에 여러가지 컨테이너 기능들을 추가하여 ApplicationContext라고 부른다.
+    + 궁극적으로는 ApplicationContext가 Spring DI 컨테이너 역할을 수행하는 것이다.
+
+##################################################################################################
+# DI 애플리케이션 작성
+##################################################################################################
+
+- DI 테스트 클래스 작성
+    + IoC 컨테이너 생성 -> ApplicationContext c = new GenericXmlApplicationContext("설정 경로")
+    + ApplicationContext에서 Bean 가져오기 -> c.getBean("id", 클래스.class)
+    + Spring IoC 컨테이너는 Bean에 해당하는 객체를 하나만 만들고 Singleton 방식으로 작동시킨다.
+
+- jUnit의 특징
+    + 단정(assert) 메소드로 테스트 케이스의 수행 결과를 판별한다.
+    + jUnit4부터는 테스트를 지원하는 어노테이션을 제공한다.
+    + 각 @Test 메소드의 호출마다 새로운 인스턴스를 생성하여 독립적인 테스트가 이루어진다.
+
+- jUnit을 사용한 DI 테스트 클래스
+    + jUnit 라이브러리 설치
+        * mvnrepository에서 junit 검색해서 의존성을 pom.xml에 추가한다.
+        * jUnit 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/junit/junit -->
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.13</version>
+</dependency>
+%%%%%%%%%%
+    + jUnit에서 테스트를 지원하는 어노테이션
+        * @Test /> 테스트를 수행하는 메소드가 된다.
+        * @Ignore /> 테스트를 실행하지 않게 한다.
+        * @Before /> @Test 메소드마다 메소드가 실행되기 전에 반드시 실행된다.
+        * @After /> @Test 메소드마다 메소드가 실행된 후 반드시 실행된다.
+        * @BeforeClass /> @Test 메소드들보다 먼저 한 번만 실행된다.
+        * @AfterClass /> @Test 메소드들보다 나중에 한 번만 실행된다.
+    + 테스트 결과를 확인하는 단정(assert) 메소드
+        * jUnit에서 제공하는 Assert 클래스에서 제공된다.
+        * import static org.junit.Assert.* /> 메소드 명만 이용해서 사용할 수 있게 해준다.
+        * assertEquals(A, B) /> 객체 A와 B가 일치함을 확인한다.
+        * assertArrayEquals(A, B) /> 배열 A와 B가 일치함을 확인한다.
+        * assertSame(A, B) /> 객체 A와 B가 같은 레퍼런스의 객체임을 확인한다.
+        * assertTrue(A) /> 조건 A가 참인가를 확인한다.
+        * assertNotNull(A) /> 조건 A가 null이 아님을 확인한다.
+
+- Spring-Test를 사용한 DI 테스트 클래스
+    + Spring-Test 라이브러리 설치
+        * mvnrepository에서 spring-test 검색해서 의존성을 pom.xml에 추가한다.
+        * Spring-Test 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-test</artifactId>
+    <version>5.2.3.RELEASE</version>
+</dependency>
+%%%%%%%%%%
+    + Spring-Test에서 테스트를 지원하는 어노테이션
+        * @RunWith(SpringJUnit4ClassRunner.class) /> jUnit의 테스트 방법을 확장할 때 사용한다.
+        * @ContextConfiguration(locations = "classpath:설정 경로") /> 설정 파일 위치를 지정한다.
+        * @Autowired /> Spring DI에서 제공되며 해당 변수에 자동으로 Bean을 매핑해준다.
+
+- Bean 의존 관계 설정 방법
+    + Setter Injection -> <property> 사용
+        * Setter 메소드로 의존 관계가 있는 Bean을 주입하려면 <property>를 사용한다.
+        * ref 속성을 사용하면 Bean 이름을 이용해 주입한 Bean을 찾는다.
+        * value 속성은 단순 값 또는 Bean이 아닌 객체를 주입할 때 사용한다.
+    + Constructor Injection -> <constructor-arg> 사용
+        * 생성자로 의존 관계가 있는 Bean을 주입하려면 <constructor-arg>를 사용한다.
+        * 생성자의 파라미터를 이용하기 때문에 한 번에 여러 개의 객체를 주입할 수 있다.
+        * index 속성이나 name 속성을 이용해 생성자 주입을 설정할 수 있다.
+
+- 프로퍼티(Property) 값 설정 방법
+    + 단순 값의 주입 -> <property>의 value 속성을 사용하여 주입한다.
+    + 컬렉션 타입의 값 주입
+        * List와 Set 타입 /> <list>나 <set> 안에 <value>를 이용하여 주입한다. 
+        * Map 타입 /> <map> 안에 key와 value 속성을 가지는 <entry>를 이용하여 주입한다.
+
+- 프로퍼티(Property) 파일을 이용한 설정 방법
+    + 환경에 따라 자주 변경되는 내용의 분리
+        * XML의 Bean 설정 정보는 애플리케이션 구조가 바뀌지 않으면 자주 변경되지 않는다.
+        * 반면 프로퍼티 값으로 제공되는 일부 설정 정보는 환경에 따라 자주 변경될 수 있다.
+        * 변경되는 이유와 시점이 다르다면 분리하는 것이 객체지향 설계의 기본 원칙이다.
+        * 환경에 따라 자주 변경될 수 있는 내용은 properties 파일로 분리하는 것이 좋다.
+    + 프로퍼티 파일로 내용 분리
+        * properties 파일은 복잡한 구성이 없이 키와 값의 쌍(key=value)으로 구성하면 된다.
+        * 프로퍼티 파일 등록 /> <context:property-placeholder location = "classpath:경로" />
+        * 프로퍼티 파일 사용 /> 프로퍼티 파일의 정보는 ${key}(프로퍼티 치환자)로 사용한다.
+
+- Bean 등록 메타정보 구성 전략
+    + XML 단독 사용 전략
+        * 모든 Bean을 명시적으로 XML에 등록하는 방법이다.
+        * 생성되는 모든 Bean을 XML에서 확인할 수 있으나 개수가 많아지면 관리가 번거롭다.
+        * 여러 개발자가 같은 설정 파일을 개발하다 보면 동시에 수정하다가 충돌할 수도 있다.
+        * DI에 필요한 적절한 Setter 메소드 또는 Constructor가 코드 내에 반드시 필요하다.
+    + XML과 Bean Scanning의 혼용 전략
+        * Bean으로 사용될 클래스에 특정 어노테이션을 부여해주면 자동으로 찾아서 등록된다.
+        * 어노테이션을 통해 자동으로 Bean 등록하는 방식은 Bean Scanning을 통해 이루어진다.
+        * XML 문서 생성과 관리에 따른 수고를 덜어주고 개발 속도가 향상될 수 있다.
+        * 등록된 Bean이 어떤 것이 있고 의존 관계가 어떻게 되는지를 한 눈에 파악할 수 없다.
+    + XML 단독 사용 전략은 운영 환경에 적합하고 Bean Scanning 혼용 전략은 개발 환경에 적합하다.
+
+- Bean 등록 및 의존 관계 설정 어노테이션
+    + Bean 등록 어노테이션
+        * @Component /> 컴포넌트를 나타내는 일반적인 스테레오 타입으로 <bean>과 동일한 역할
+        * @Repository /> 퍼시스턴스 레이어, 영속성을 가지는 속성을 가진 클래스
+        * @Service /> 서비스 레이어, 비즈니스 로직을 가진 클래스
+        * @Controller /> 프리젠테이션 레이어, 애플리케이션에서 웹 요청과 응답을 처리하는 클래스
+        * @Repository, @Service, @Controller는 @Component의 구체화된 형태이다.
+    + Bean 의존 관계 주입 어노테이션
+        * @Autowired
+            ^ 정밀한 의존 관계 주입이 필요한 경우에 유용하다.
+            ^ 프로퍼티, setter 메소드, 생성자, 일반 메소드에 적용이 가능하다.
+            ^ 의존하는 객체를 주입할 때 주로 Type을 이용하게 된다.
+            ^ <property>, <constructor-arg>와 동일한 역할을 한다.
+        * @Resource
+            ^ 애플리케이션에서 필요로 하는 자원을 자동 연결할 때 사용한다.
+            ^ 프로퍼티, setter 메소드에 적용이 가능하다.
+            ^ 의존하는 객체를 주입할 때 주로 Name을 이용하게 된다.
+        * @Value /> 단순한 값을 주입할 때 사용되는 어노테이션이다.
+        * @Qualifier /> @Autowired와 같이 사용되며 동일 타입의 Bean 중 특정 Bean을 찾아 준다.
+    + Component Scan을 지원하는 태그 -> <context:component-scan base-package = "패키지 경로" />
+        * Bean Scanning을 사용할 때 해당 클래스가 위치한 특정 패키지에 대해 설정을 해줘야 한다.
+        * <context:include-filter>와 <context:exclude-filter>로 스캔 대상을 명시할 수 있다.
+
+- 프로퍼티(Property) 파일을 이용한 값 설정 방법
+    + 단순한 값을 주입할 때는 @Value("${key}")를 사용하면 된다.
+    + 특정 Bean을 주입할 때는 @Resource(name = "${key}")를 사용하면 된다.
+
+##################################################################################################
+# 사용자 관리 프로젝트
+##################################################################################################
+
+- 사용자 관리 프로젝트 아키텍쳐
+    + 아키텍쳐 개요
+        * 효율적인 개발 및 유지보수를 위하여 계층화(Layering)하여 개발하는 것이 일반적이다.
+        * Presentation, Service, Data Access Layer 3계층과 도메인 모델 클래스로 구성된다.
+        * 각각의 계층은 독립적으로 분리하여 구현하는 것이 가능해야 하며 담당할 기능들이 있다.
+        * 각 계층 사이에서는 인터페이스(interface)를 이용하여 통신하는 것이 일반적이다.
+    + 프리젠테이션 계층
+        * 브라우저 상의 웹 클라이언트의 요청 및 응답을 처리
+        * 상위 계층(Service, Data Access Layer)에서 발생하는 Exception에 대한 처리
+        * 최종 UI에서 표현해야 할 도메인 모델을 사용
+        * 최종 UI에서 입력한 데이터에 대한 유효성 검증 기능을 제공
+        * 비즈니스 로직과 최종 UI를 분리하기 위한 컨트롤러 기능을 제공
+        * @Controller 어노테이션을 사용하여 작성된 Controller 클래스가 이 계층에 속한다.
+    + 서비스 계층
+        * 애플리케이션 비즈니스 로직 처리와 비즈니스와 관련된 도메인 모델의 적합성 검증
+        * 트랜잭션(Transaction) 처리
+        * 프리젠테이션 계층과 데이터 액세스 계층 사이를 연결하는 역할로 유연성을 증가시킨다.
+        * 다른 계층들과 통신하기 위한 인터페이스를 제공
+        * @Service 어노테이션을 사용하여 작성된 Service 구현 클래스가 이 계층에 속한다.
+    + 데이터 액세스 계층
+        * 영구 저장소의 데이터를 조작하는 데이터 액세스 로직을 객체화
+        * 영구 저장소의 데이터를 조회, 등록, 수정, 삭제한다.
+        * ORM(Object Relational Mapping) 프레임워크(MyBatis, Hibernate)를 주로 사용하는 계층
+        * @Repository 어노테이션을 사용하여 작성된 DAO 구현 클래스가 이 계층에 속한다.
+    + 도메인 모델 클래스
+        * 관계형 데이터베이스의 엔티티와 비슷한 개념을 가지는 것
+        * 실제 VO(Value Object) 혹은 DTO(Data Transfer Object) 객체에 해당
+        * 도메인 모델 클래스는 3개의 계층 전체에 걸쳐 사용
+        * private으로 선언된 멤버 변수가 있고 그 변수에 대한 getter와 setter 메소드를 가진다.
+
+- 사용자 관리 프로젝트 클래스 설계
+    + 프리젠테이션 계층 -> UserController 클래스
+        * UI 계층과 서비스 계층을 연결하는 역할을 하는 클래스
+        * JSP에서 UserController를 통해서 서비스 계층의 UserService를 사용하게 된다.
+        * 서비스 계층의 UserService를 구현한 객체를 IoC 컨테이너가 주입해준다.
+    + 서비스 계층
+        * UserService 인터페이스 /> 서비스 계층에 속한 상위 인터페이스
+        * UserServiceImpl 클래스 /> UserService 인터페이스를 구현한 클래스
+            ^ 복잡한 업무 로직이 있을 경우 이 클래스에서 구현하면 된다.
+            ^ 데이터 액세스 계층의 UserDao를 구현한 객체를 IoC 컨테이너가 주입해준다.
+    + 데이터 액세스 계층
+        * UesrDao 인터페이스 /> 데이터 액세스 계층에 속한 상위 인터페이스
+        * UserDaoImplJDBC 클래스 /> UserDao 인터페이스를 구현한 클래스
+            ^ SpringJDBC를 사용하는 경우에는 DataSource를 IoC 컨테이너가 주입해준다.
+            ^ MyBatis를 사용하는 경우에는 SqlSession를 IoC 컨테이너가 주입해준다.
+
+##################################################################################################
+# Spring JDBC 개요
+##################################################################################################
+
+- 데이터 액세스 공통 개념
+    + DAO(Data Access Object) 패턴
+        * DAO 패턴을 적용하여 비즈니스 로직과 데이터 액세스 로직을 분리해야 한다.
+        * 비즈니스 로직이 단순하면 DAO와 서비스 계층을 통합할 수도 있다.
+        * DAO 패턴은 서비스 계층에 영향을 주지 않고 데이터 액세스 기술을 변경할 수 있다.
+    + 컨넥션 풀링을 지원하는 DataSource
+        * 컨넥션 풀링 /> DB 컨넥션을 Pool에 준비한 후 요청마다 하나씩 할당하고 반환하는 기법
+        * 다중 사용자를 가지는 시스템에서는 반드시 DB 컨넥션 풀링이 지원되어야 한다.
+        * Spring에서는 DataSource를 공유 가능한 Spring Bean으로 등록해 주어 사용할 수 있다.
+    + DataSource 구현 클래스 종류
+        * 테스트 환경을 위한 DataSource
+            ^ SimpleDriverDataSource .> 매번 DB 컨넥션을 새로 만드는 가장 단순한 구현 클래스
+            ^ SimpleConnectionDriverDataSource .> 순차적으로 진행되는 통합 테스트에서 사용
+        * 오픈소스 DataSource
+            ^ Apach Commons DBCP .> 가장 유명한 오픈소스 DB 풀 라이브러리
+            ^ c3p0 JDBC/DataSource Resource Pool .> JDBC 3.0 스펙을 준수하는 풀을 제공한다.
+            ^ 두 오픈소스 모두 setter 메소드를 제공하므로 Spring Bean으로 사용하기 편리하다.
+
+- Spring JDBC 개요
+    + JDBC란? -> 모든 자바의 데이터 액세스 기술의 근간이 되는 기술
+        * 안정적이고 유연한 기술이지만, 로우 레벨 기술로 인식되고 있다.
+        * 간단한 SQL 실행에도 중복된 코드가 반복적으로 사용되며 예외 처리가 어렵다.
+    + Spring JDBC란? -> 기존 JDBC의 단점을 극복하고 간결한 형태의 API 사용법을 제공한다.
+        * 반복적으로 해야 하는 많은 작업들을 사용자 대신 해준다.
+        * 실행할 SQL과 바인딩할 파라미터, 실행 결과로 받을 객체만 지정해주면 된다.
+        * 사용하려면 먼저 DB 컨넥션을 가져오는 DataSource를 Bean으로 등록해야 한다.
+    + Spring JDBC가 해주는 작업
+        * Connection의 열기와 닫기
+        * Statement의 준비와 닫기, 실행하기
+        * ResultSet Loop 처리
+        * Checked Exception을 Runtime Exception으로 처리와 반환
+        * Transaction 관련 작업 처리
+
+- Spring JDBC의 JdbcTemplate 클래스
+    + JdbcTemplate 클래스 -> JDBC의 모든 기능을 최대한 활용할 수 있는 유연성을 제공하는 클래스
+        * 제공하는 기능은 실행, 조회, 배치의 3가지 작업이다.
+        * 실행 /> Insert나 Update와 같이 DB의 데이터에 변경을 수행하는 작업
+        * 조회 /> Select를 이용해 데이터를 조회하는 작업
+        * 배치 /> 여러 개의 쿼리를 한 번에 수행해야 하는 작업
+    + JdbcTemplate 클래스 생성 -> JdbcTemplate template = new JdbcTemplate(dataSource)
+        * 멀티스레드 환경에서도 안전하므로 DAO 클래스의 인스턴스 변수에 두고 사용한다.
+    + JdbcTemplate 클래스 생성 Code ->
+%%%%%%%%%%(DAO 클래스 내부)
+JdbcTemplate jdbcTemplate;
+
+@Autowired
+public void setDataSource(DataSource dataSource) {
+    jdbcTemplate = new JdbcTemplate(dataSource);
+}
+%%%%%%%%%%
+    + JdbcTemplate 클래스의 update() 메소드
+        * 메소드 Signature /> int update(String sql, Object... args)
+        * INSERT, UPDATE, DELETE 같은 SQL 실행할 때 사용한다.
+        * args(SQL Parameter)에는 sql 문자열 안에 있는 ?에 매핑될 인자들을 넣어준다.
+        * 리턴되는 값은 SQL 실행으로 영향을 받은 레코드의 개수이다.
+    + JdbcTemplate 클래스의 queryForObject() 메소드
+        * 메소드 Signature /> <T> T queryForObject(String sql, Object[] args, RowMapper<T> rm)
+        * SELECT SQL을 실행하여 하나의 Row를 가져올 때 사용한다.
+        * 실행 결과로 나온 하나의 Row를 RowMapper 콜백을 이용해 VO 객체로 매핑해준다.
+        * RowMapper에서 Override해야 하는 메소드 /> public T mapRow(ResultSet rs, int rowNum)
+    + JdbcTemplate 클래스의 query() 메소드
+        * 메소드 Signature /> <T> List<T> query(String sql, Object[] args, RowMapper<T> rm) 
+        * SELECT SQL을 실행하여 여러 개의 Row를 가져올 때 사용한다.
+        * 결과 값은 매핑한 VO 객체를 포함하고 있는 List 형태로 받는다.
+
+##################################################################################################
+# Spring JDBC 환경설정
+##################################################################################################
+
+- DB 설정 및 JDBC Driver 설치
+    + MySQL 관련 명령어
+        * 계정 생성 /> CREATE USER userId@connectHost IDENTIFIED BY password;
+        * 권한 부여 /> GRANT ALL PRIVILEGES ON schema.table TO userId@connectHost;
+        * 스크립트 실행 /> SOURCE pathOfScript;
+    + MySQL JDBC Driver 라이브러리 설치
+        * mvnrepository에서 mysql-connector 검색해서 의존성을 pom.xml에 추가한다.
+        * MySQL JDBC Driver 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.15</version>
+</dependency>
+%%%%%%%%%%
+
+- Spring JDBC 설치 및 DataSource 설정
+    + Spring JDBC 라이브러리 설치
+        * mvnrepository에서 spring-jdbc 검색해서 의존성을 pom.xml에 추가한다.
+        * Spring JDBC 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>5.2.5.RELEASE</version>
+</dependency>
+%%%%%%%%%%
+    + DataSource 설정 예시 />
+%%%%%%%%%%(beans.xml)
+<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+    <!-- MySQL Driver Class = com.mysql.cj.jdbc.Driver -->
+    <!-- MySQL DB URL = jdbc:mysql://{host}:{port}/{schema}?serverTimezone=UTC -->
+    <property name="driverClass" value="${db.driverClass}" />
+    <property name="url" value="${db.url}" />
+    <property name="username" value="${db.username}" />
+    <property name="password" value="${db.password}" />
+</bean>
+%%%%%%%%%%
+
+##################################################################################################
+# AOP 개요
+##################################################################################################
+
+- AOP의 개요와 용어
+    + 핵심 기능과 부가 기능
+        * 업무 로직을 포함하는 기능을 핵심 기능이라고 한다.
+        * 핵심 기능을 도와주는 부가적인 기능(로깅, 보안 등)을 부가 기능이라고 한다.
+        * 객체지향의 기본 원칙을 적용하여도 핵심 기능에서 부가 기능을 분리하는 것은 어렵다.
+    + AOP(Aspect Oriented Programming)의 개요
+        * AOP는 애플리케이션에서 핵심 기능과 부가 기능을 분리하게 해준다.
+        * 분리한 부가 기능을 애스펙트(Aspect)라는 모듈 형태로 만들어서 설계하고 개발한다.
+    + 애스펙트(Aspect) -> Advice + PointCut
+        * 부가 기능을 정의한 Advice와 어디에 적용할 지를 결정하는 PointCut을 합친 개념이다.
+        * AOP 개념을 적용하면 핵심 기능 코드 사이에 침투된 부가 기능을 구분해 낼 수 있다.
+        * 구분된 부가 기능 애스펙트를 런타임 시에 필요한 위치에 동적으로 참여시킬 수 있다.
+    + AOP 용어
+        * 타겟(Target) /> 핵심 기능을 담고 있는 모듈로 부가 기능을 부여할 대상이 된다.
+        * 어드바이스(Advice) /> 타겟에 제공할 부가 기능을 담고 있는 모듈이다.
+        * 조인 포인트(Join Point) /> 어드바이스가 적용될 수 있는 위치를 의미한다.
+        * 포인트컷(PointCut) /> 어드바이스를 적용할 타겟의 메소드를 선별하는 정규표현식이다.
+        * 애스펙트(Aspect) /> 애스펙트는 AOP의 기본 모듈으로 싱글톤 형태로 존재한다.
+        * 어드바이저(Advisor) /> 어드바이스 + 포인트컷으로 Spring AOP에서만 사용되는 용어이다.
+        * 위빙(Weaving) /> 타겟의 조인 포인트에 어드바이스를 삽입하는 과정이다.
+
+- Spring AOP의 특징 및 구현 방식
+    + Spring AOP의 특징
+        * Spring은 타겟에 대한 Proxy를 만들어 제공하는 Proxy 기반 AOP를 지원한다.
+        * Proxy는 타겟에 대한 호출을 가로챈 다음 어드바이스를 수행한다.
+        * 메소드 조인 포인트만 지원하므로 타겟의 메소드가 호출되는 시점에만 적용할 수 있다.
+    + Spring AOP의 구현 방식
+        * XML 기반의 POJO 클래스를 이용한 AOP 구현
+            ^ 부가 기능을 제공하는 Advice 클래스를 작성한다.
+            ^ XML 설정 파일에 <aop:config>를 이용해서 애스펙트를 설정한다.
+        * @Aspect 어노테이션을 이용한 AOP 구현
+            ^ @Aspect 어노테이션을 이용해서 부가 기능을 제공하는 Aspect 클래스를 작성한다.
+            ^ XML 설정 파일에 <aop:aspectj-autoproxy />를 설정한다.
+
+- AspectJ와 Spring AOP 라이브러리 설치
+    + AspectJ Runtime 라이브러리 설치
+        * mvnrepository에서 aspectj-runtime 검색해서 의존성을 pom.xml에 추가한다.
+        * AspectJ Runtime 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
+<dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjrt</artifactId>
+    <version>1.9.4</version>
+</dependency>
+%%%%%%%%%%
+    + AspectJ Weaver 라이브러리 설치
+        * mvnrepository에서 aspectj-weaver 검색해서 의존성을 pom.xml에 추가한다.
+        * AspectJ Weaver 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+<dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjweaver</artifactId>
+    <version>1.9.4</version>
+</dependency>
+%%%%%%%%%%
+    + Spring AOP 라이브러리 설치
+        * mvnrepository에서 spring-aop 검색해서 의존성을 pom.xml에 추가한다.
+        * Spring AOP 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-aop -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aop</artifactId>
+    <version>5.2.5.RELEASE</version>
+</dependency>
+%%%%%%%%%%
+    + AspectJ Runtime API 문서 -> https://www.eclipse.org/aspectj/doc/next/runtime-api/
+
+##################################################################################################
+# AOP 애플리케이션 작성
+##################################################################################################
+
+- Advice 클래스 작성
+    + Advice의 종류
+        * Around 어드바이스 /> JoinPoint 앞과 뒤에서 실행
+        * Before 어드바이스 /> JoinPoint 앞에서 실행
+        * AfterReturning 어드바이스 /> JoinPoint 메소드 호출이 정상적으로 종료된 뒤 실행
+        * AfterThrowing  어드바이스 /> 예외가 던져질 때 실행
+    + JoinPoint 인터페이스
+        * JoinPoint는 Spring AOP 또는 AspectJ에서 AOP가 적용되는 지점을 뜻한다.
+        * 모든 어드바이스는 JoinPoint 타입의 파라미터를 메소드의 첫 매개변수로 선언해야 한다.
+        * Around 어드바이스는 ProceedingJoinPoint 타입의 파라미터를 필수적으로 선언해야 한다.
+    + JoinPoint 인터페이스의 메소드
+        * getArgs() /> 메소드의 아규먼트를 반환한다.
+        * getThis() /> 메소드의 프록시 객체를 반환한다.
+        * getTarget() /> 타겟 객체를 반환한다.
+        * getSignature() /> 어드바이즈 되는 메소드의 설명을 반환한다.
+        * toString() /> 어드바이즈 되는 메소드의 설명을 출력한다.
+    + ProceedingJoinPoint 인터페이스의 메소드
+        * proceed(), proceed(Object[] args) /> 타겟 객체를 호출하여 실행시켜 준다.
+
+- AOP 설정 및 테스트
+    + AOP 설정
+        * <aop:config> /> AOP 설정 정보임을 나타낸다.
+        * <aop:aspect> /> 애스팩트를 설정한다.
+        * <aop:around pointcut="excution()"> /> Around 어드바이스와 포인트컷을 설정한다.
+        * AOP 설정 예시 />
+%%%%%%%%%%(beans.xml)
+<aop:config>
+    <aop:aspect id="traceAspect" ref="performanceTraceAdvice">
+        <aop:around method="trace" 
+            pointcut="execution(public * myspring.user.service..*.*(..))" />
+    </aop:aspect>
+</aop:config>
+%%%%%%%%%%
+    + AOP 설정에 대한 설명
+        * <aop:aspect>의 ref 속성은 애스팩트로서 기능을 제공할 Bean을 설정한다.
+        * <aop:around>의 pointcut 속성의 execution은 어드바이스를 적용할 대상을 표현한다.
+    + Advice를 정의하는 태그
+        * <aop:before> /> 메소드 실행 전에 적용되는 어드바이스
+        * <aop:after-returning> /> 메소드가 정상적으로 실행된 후에 적용되는 어드바이스
+        * <aop:after-throwing> /> 메소드가 예외를 발생시킬 때 적용되는 어드바이스
+        * <aop:after> /> 메소드의 정상 실행 여부에 상관없이 실행 후에 적용되는 어드바이스
+        * <aop:around> /> 메소드의 호출이나 예외 발생의 모든 시점에서 적용 가능한 어드바이스
+
+- PointCut 표현식
+    + AspectJ 포인트컷 표현식은 포인트컷 지시자을 이용하여 작성한다.
+    + 포인트컷 지시자 중에서 가장 대표적으로 사용되는 것은 execution()이다.
+    + execution() 표현식의 구조 /> [접근제한자] 리턴타입 [클래스].메소드(타입) [throws 예외]
+        * 클래스 패턴에서 패키지에 ..이 붙으면 서브패키지까지 모두 검사한다.
+        * 타입 패턴에 ..을 넣으면 모든 타입과 개수에 상관없이 검사한다.
+
+- Aspect 클래스 선언 및 설정
+    + @Aspect 어노테이션
+        * Aspect 클래스를 선언할 때 사용하는 어노테이션이다.
+        * 클래스를 Aspect로 사용하려면 Bean 등록도 해야하므로 @Component도 정의해야 한다.
+        * XML 설정 파일에 어드바이스와 포인트컷을 설정하지 않고 클래스 내부에 정의할 수 있다.
+        * <aop:aspectj-autoproxy />를 설정에 추가하면 적용 클래스를 Aspect로 사용 가능하다.
+
+- Aspect 클래스 구현
+    + Advice를 정의하는 어노테이션
+        * @Before("pointcut") /> 타겟의 메소드가 실행되기 전에 호출되는 어드바이스
+        * @After("pointcut") /> 타겟의 메소드가 종료되었을 때 호출되는 어드바이스
+        * @Around("pointcut") /> 타겟의 메소드가 호출되는 모든 과정을 담을 수 있는 어드바이스
+        * @AfterReturning(pointcut="", returning="ret") /> 메소드가 정상적으로 종료된 경우
+        * @AfterThrowing(pointcut="", throwing="exc") /> 메소드가 예외를 발생시킨 경우
+    + Advice의 메소드 Signature
+        * Before 어드바이스 /> void before(JointPoint joinPoint) 
+        * After 어드바이스 /> void afterFinally(JointPoint joinPoint)
+        * AfterReturning 어드바이스 /> void afterReturning(JointPoint joinPoint, Object ret)
+        * AfterThrowing 어드바이스 /> void afterThrowing(JointPoint joinPoint, Throwable exc)
+
+##################################################################################################
+# MyBatis 개요
+##################################################################################################
+
+- MyBatis의 개요와 특징
+    + MyBatis의 개요
+        * 자바 오브젝트와 SQL문 사이의 자동 매핑 기능을 지원하는 ORM 프레임워크이다.
+        * SQL을 별도의 파일로 분리해서 관리하게 해주며 파라미터 매핑 작업을 자동으로 해준다.
+        * 개발자가 익숙한 SQL을 그대로 사용하면서 JDBC 코드 작성의 불편함도 제거해 주었다.
+        * 도메인 객체나 VO 객체를 중심으로 개발이 가능하다.
+    + MyBatis의 특징
+        * 쉬운 접근성과 코드의 간결함
+        * SQL문과 프로그래밍 코드의 분리
+        * 다양한 프로그래밍 언어로 구현 가능
+
+- MyBatis와 MyBatis-Spring의 주요 컴포넌트
+    + MyBatis의 주요 컴포넌트
+        * MyBatis 설정 파일(SqlMapConfig.xml) /> DB 접속 주소나 매핑 파일 등 환경 정보를 설정
+        * SqlSessionFactoryBuilder /> MyBatis 설정 파일을 바탕으로 SqlSessionFactory를 생성
+        * SqlSessionFactory /> SqlSession을 생성
+        * SqlSession /> 핵심 클래스로 SQL 실행이나 트랜잭션 관리를 실행(Non-Thread-Safe)
+        * Mapping 파일 /> SQL문과 Object Relational Mapping을 설정
+    + MyBatis-Spring의 주요 컴포넌트
+        * MyBatis 설정 파일(SqlMapConfig.xml) /> VO 객체의 정보를 설정
+        * SqlSessionFactoryBean /> MyBatis 설정 파일을 바탕으로 SqlSessionFactory를 생성
+        * SqlSessionTemplate /> 핵심 클래스로 SQL 실행이나 트랜잭션 관리를 실행(Thread-Safe)
+        * Mapping 파일 /> SQL문과 Object Relational Mapping을 설정
+        * Bean 설정파일 /> SqlSessionFactoryBean, SqlSessionTemplate을 Bean으로 등록
+    + MyBatis-Spring의 사용
+        * MyBatis의 SqlSession은 Thread-Safe하지 않으므로 필요하면 thread마다 생성해야 한다.
+        * MyBatis-Spring의 SqlSessionTemplate은 Thread-Safe하므로 편리하게 사용할 수 있다.
+        * SqlSessionFactoryBean을 등록할 때는 DataSource와 설정 파일, 매핑 파일을 설정한다.
+        * MyBatis 설정 파일에는 환경 정보는 필요 없이 VO 객체 정보만 설정해주면 된다.
+
+##################################################################################################
+# MyBatis 애플리케이션 작성
+##################################################################################################
+
+- MyBatis와 MyBatis-Spring 설치
+    + MyBatis 라이브러리 설치
+        * mvnrepository에서 mybatis 검색해서 의존성을 pom.xml에 추가한다.
+        * MyBatis 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+<dependency>
+    <groupId>org.mybatis</groupId>
+    <artifactId>mybatis</artifactId>
+    <version>3.4.6</version>
+</dependency>
+%%%%%%%%%%
+    + MyBatis-Spring 라이브러리 설치
+        * mvnrepository에서 mybatis-spring 검색해서 의존성을 pom.xml에 추가한다.
+        * MyBatis-Spring 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/org.mybatis/mybatis-spring -->
+<dependency>
+    <groupId>org.mybatis</groupId>
+    <artifactId>mybatis-spring</artifactId>
+    <version>1.3.2</version>
+</dependency>
+%%%%%%%%%%
+
+- Mapping 파일 작성 및 MyBatis 설정
+    + Mapping 파일
+        * <mapper namespace="네임스페이스"> 안에 해당되는 SQL문들을 태그로 작성한다.
+        * <select>, <insert>, <update>, <delete>로 SQL문들을 작성할 수 있다.
+        * SQL문 태그들은 속성으로 id, parameterType, resultType을 가질 수 있다.
+        * parameterType을 객체로 주고 싶다면 설정 파일에서 VO 객체의 정보를 설정해야 한다.
+        * parameterType을 string으로 지정하면 #{value}를 통해 값을 넣어줄 수 있다.
+        * parameterType을 객체로 지정하면 #{멤버변수}를 통해 값을 넣어줄 수 있다.
+        * Mapping 파일 DTD 설정 />
+%%%%%%%%%%(SqlMapping.xml)
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+%%%%%%%%%%
+    + MyBatis Configuration 파일
+        * <typeAlias>를 이용해 VO 객체의 정보를 Mapping 파일에서 사용하도록 해준다.
+        * MyBatis Configuration 파일 DTD 설정 />
+%%%%%%%%%%(SqlMapConfig.xml)
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+%%%%%%%%%%
+        * MyBatis Configuration 파일 예시 />
+%%%%%%%%%%(SqlMapConfig.xml)
+<configuration>
+    <typeAliases>
+        <typeAlias alias="타입명" type="패키지.클래스" />
+    </typeAliases>
+</configuration>
+%%%%%%%%%%
+    + Spring Bean 설정 파일
+        * SqlSessionFactoryBean과 SqlSessionTemplate을 Bean으로 등록해야 한다.
+        * Spring Bean 설정 파일 예시 />
+%%%%%%%%%%(beans.xml)
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+    <property name="configLocation" value="classpath:MyBatis 설정 파일" />
+    <property name="mapperLocations">
+        <list>
+            <value>classpath:Mapping 파일</value>
+        </list>
+    </property>
+</bean>
+
+<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+    <constructor-arg ref="sqlSessionFactory" />
+</bean>
+%%%%%%%%%%
+    + 데이터 액세스 계층의 DAO 구현 클래스
+        * SqlSession 멤버 변수를 통해 JDBC 관련 메소드들을 처리한다.
+        * SqlSession의 메소드
+            ^ <T> T selectOne(String statement, Object param)
+            ^ <E> List<E> selectList(String statement, Object param)
+            ^ int insert(String statement, Object param)
+            ^ int update(String statement, Object param)
+            ^ int delete(String statement, Object param)
+            ^ 첫번째 인자 statement는 해당하는 "Namespace.SqlId"를 넣어줘야 한다.
+
+- Mapper 인터페이스 개념
+    + Mapper 인터페이스 -> Mapping 파일에 기재된 SQL을 호출하기 위한 인터페이스
+    + Mapper 인터페이스를 사용하지 않았을 때
+        * SqlSession의 메소드의 아규먼트에 문자열로 네임스페이스와 SQL ID를 지정해야 한다.
+        * 문자열로 지정하기 때문에 오타가 있을 수 있고 code assist를 사용할 수 없다.
+    + Mapper 인터페이스를 사용하였을 때
+        * SqlSession을 사용하는 Mapper 인터페이스는 개발자가 작성한다.
+        * "패키지.인터페이스.메소드"가 "Namespace.SqlId"가 되도록 정보들을 설정해야 한다.
+        * 네임스페이스 속성은 패키지를 포함한 Mapper 인터페이스 이름으로 설정한다.
+        * SQL ID 속성은 매핑하는 메소드 이름으로 설정한다.
+
+- Mapper 인터페이스 작성 및 설정
+    + Mapping 파일 수정 -> <mapper>의 namespace 속성을 "패키지.인터페이스"로 변경한다.
+    + DAO 클래스 수정 -> SqlSession 멤버 변수를 없애고 Mapper 인터페이스 멤버 변수로 처리한다.
+    + MapperFactoryBean의 설정
+        * MapperFactoryBean은 Mapper 인터페이스를 구현하는 프록시 클래스를 생성한다.
+        * 프록시는 런타임 시에 생성되므로 지정된 Mapper는 인터페이스여야만 한다.
+        * MapperFactoryBean은 sqlSessionTemplate 속성을 필요로 한다.
+        * MapperFactoryBean의 설정 예시 />
+%%%%%%%%%%(beans.xml)
+<bean id="mapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+    <property name="mapperInterface" value="패키지.인터페이스" />
+    <property name="sqlSessionTemplate" ref="sqlSession" />
+</bean>
+%%%%%%%%%%
+
+- 여러 개의 Mapper 인터페이스 설정
+    + MapperScannerConfigurer의 사용
+        * MapperFactoryBean을 이용한 Mapper 인터페이스 등록은 개수가 많아지면 작성이 힘들다.
+        * Mapper 인터페이스 개수가 많아지면 MapperScannerConfigurer를 이용하는 것이 편리하다.
+        * MapperScannerConfigurer를 이용하면 지정한 패키지의 모든 인터페이스를 등록할 수 있다.
+    + MapperScannerConfigurer의 설정
+        * basePackage 속성에는 Mapper 인터페이스를 검색할 대상이 되는 패키지를 지정한다.
+        * 지정한 패키지 아래의 모든 인터페이스들에 대응하여 Mapper 객체가 생성된다.
+        * 다른 인터페이스가 존재하면 예상하지 않은 객체가 등록되어 오류가 발생할 수 있다.
+        * MapperScannerConfigurer의 설정 예시 />
+%%%%%%%%%%(beans.xml)
+<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="Mapper 패키지" />
+</bean>
+%%%%%%%%%%
+
+##################################################################################################
+# Spring MVC 개요
+##################################################################################################
+
+- MVC 패턴의 개념과 모델2 아키텍쳐
+    + MVC(Model-View-Controller) 패턴의 개념
+        * 아키텍쳐 패턴으로 Business Logic과 Presentation Logic을 분리하는 것이 주 목적이다.
+        * Model /> 애플리케이션의 정보(데이터, Business Logic 포함)
+        * View /> 사용자에게 제공할 화면(Presentation Logic)
+        * Controller /> Model과 View 사이의 상호 작용을 관리
+    + 각각의 MVC 컴포넌트의 역할
+        * Model 컴포넌트
+            ^ 데이터 저장소와 연동하여 사용자의 입력이나 출력 데이터를 다룬다.
+            ^ 여러 개의 데이터 변경 작업을 하나의 작업으로 묶는 트랜잭션을 다루는 일도 한다.
+            ^ DAO 클래스와 Service 클래스에 해당한다.
+        * View 컴포넌트
+            ^ 모델이 처리한 데이터나 그 결과를 가지고 사용자에게 출력할 화면을 만든다.
+            ^ HTML, CSS, JavaScript를 이용해 생성된 화면은 웹 브라우저가 출력한다.
+            ^ HTML과 JSP를 사용하여 작성할 수 있다.
+        * Controller 컴포넌트
+            ^ 클라이언트의 요청을 받았을 때 요청에 대한 Model 컴포넌트를 호출한다.
+            ^ 클라이언트가 보낸 데이터가 있다면 Model을 호출할 때 데이터를 가공해 전달한다.
+            ^ Model이 업무 수행을 완료하면 결과를 가지고 화면을 생성하도록 뷰에게 전달한다.
+            ^ Servlet과 JSP를 사용하여 작성할 수 있다.
+    + 모델2 아키텍쳐 개념
+        * 모델1 아키텍쳐 /> Controller 역할을 JSP가 담당한다.
+        * 모델2 아키텍쳐 /> Controller 역할을 Servlet이 담당한다.
+    + 모델2 아키텍쳐 호출 순서
+        * 웹 브라우저가 서버 실행을 요청하면 요청을 받아 서블릿 컨테이너(Tomcat)에게 넘겨준다.
+        * 서블릿 컨테이너는 URL을 확인하여 요청을 처리할 서블릿을 찾아서 실행한다.
+        * 서블릿은 실제 업무를 처리하는 모델 자바 객체의 메소드를 호출한다.
+        * 웹 브라우저가 보낸 데이터를 저장 또는 변경해야 한다면 VO 객체를 생성하고 넘겨준다.
+        * 모델 객체는 JDBC를 사용하여 매개변수로 넘어온 값 객체를 데이터베이스에 저장한다.
+        * 데이터베이스로부터 질의 결과를 받아와야 한다면 VO 객체로 만들어 반환한다.
+        * 서블릿은 모델 객체로부터 반환 받은 VO 객체를 JSP에 전달한다.
+        * JSP는 서블릿에게 전달받은 객체를 참조하여 화면을 만들고 웹 브라우저에게 응답한다.
+        * 웹 브라우저는 서버로부터 받은 응답 내용을 화면에 출력한다.
+    + Front Controller 패턴 아키텍쳐
+        * Front Controller는 클라이언트가 보낸 요청을 받아서 공통적인 작업을 먼저 수행한다.
+        * Front Controller는 적절한 세부 Controller에게 작업을 위임한다.
+        * 각각의 Controller는 클라이언트에게 보낼 뷰를 선택해서 최종 결과를 생성한다.
+        * 모든 요청에 대해 공통적으로 처리해야 할 로직(인증, 권한 체크)이 있을 경우 사용한다.
+        * 전체적으로 클라이언트의 요청을 중앙 집중적으로 관리하고자 할 경우 사용한다.
+
+- Spring MVC 개념
+    + Spring MVC의 특징
+        * 모델2 아키텍쳐와 Front Controller 패턴을 프레임워크 차원에서 제공한다.
+        * Spring을 기반으로 하기 때문에 트랜잭션 처리나 DI 및 AOP 등을 쉽게 사용할 수 있다.
+    + Spring MVC와 Front Controller 패턴
+        * 대부분의 MVC 프레임워크들은 Front Controller 패턴을 적용해서 구현한다.
+        * Spring MVC의 Front Controller 역할은 DispatcherServlet이라는 클래스가 담당한다.
+        * DispatcherServlet은 계층의 맨 앞단에서 서버로 들어오는 모든 요청을 받아 처리한다.
+        * 예외가 발생했을 때 일관된 방식으로 처리하는 것도 Front Controller의 역할이다.
+    + Spring MVC의 주요 구성 요소
+        * DispatcherServlet /> 요청을 Controller에게 주고 반환 결과를 View에게 주어 응답 생성
+        * HandlerMapping /> URL과 요청 정보를 기준으로 어떤 핸들러 객체를 사용할 지 결정
+        * Controller /> 요청 처리 후 Model을 호출하고 그 결과를 DispatcherServlet에게 전달
+        * ModelAndView /> Controller가 처리한 데이터 및 화면에 대한 정보를 보유한 객체
+        * View /> Controller의 처리 결과 화면에 대한 정보를 보유한 객체
+        * ViewResolver /> Controller가 리턴한 뷰 이름을 기반으로 생성할 뷰를 결정
+    + Spring MVC의 주요 구성 요소의 요청 처리 과정
+        * 클라이언트의 요청이 DispatcherServlet에게 전달된다.
+        * DispatcherServlet은 HandlerMapping을 사용해 요청을 처리할 Controller를 획득한다.
+        * DispatcherServlet은 Controller 객체를 이용해 요청을 처리한다.
+        * Controller는 처리 결과와 View 페이지 정보를 담은 ModelAndView 객체를 반환한다.
+        * DispatcherServlet은 ViewResolver로부터 응답 결과를 생성할 View 객체를 구한다.
+        * View는 클라이언트에게 전송할 응답을 생성한다.
+
+- Spring MVC 기반 웹 어플리케이션 개발
+    + Spring MVC 기반 웹 어플리케이션 작성 절차
+        * 클라이언트의 요청을 받는 DispatcherServlet을 web.xml에 설정
+        * 클라이언트의 요청을 처리할 Controller를 작성
+        * Spring Bean으로 Controller를 등록
+        * JSP를 이용한 View 영역의 코드를 작성
+        * Browser 상에서 JSP를 실행
+
+##################################################################################################
+# Spring MVC 환경설정
+##################################################################################################
+
+- Server 등록 및 Browser 설정
+    + Server 등록
+        * 상단 메뉴 File > New > Other > Server > 서버 설치 디렉토리 지정 후 생성
+        * Servers 탭에서 서버 등록 현황을 보거나 작동 시킬 수 있다.
+        * Servers 탭에서 해당 Server를 더블 클릭하여 Overview를 보거나 수정할 수 있다.
+    + 기본 Browser 설정
+        * 상단 메뉴 Window > Preferences > General > Web Browser > Use external web browser
+        * New 버튼을 이용해 새로운 외부 Browser를 기본 Browser로 설정할 수 있다.
+
+- Dynamic Web Project 작성
+    + Dynamic Web Project 생성 -> 상단 메뉴 File > New > Dynamic Web Project
+    + Dynamic Web Project 정보 설정 -> Project name, Target runtime 설정
+    + web.xml 생성 되도록 선택 -> Generate web.xml deployment descriptor 체크
+    + 생성된 프로젝트를 Maven Project로 변환하고 Spring Project Nature 추가한다.
+
+- Spring MVC 설정
+    + Spring MVC 라이브러리 설치
+        * mvnrepository에서 spring-mvc 검색해서 의존성을 pom.xml에 추가한다.
+        * Spring MVC 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>5.2.6.RELEASE</version>
+</dependency>
+%%%%%%%%%%
+    + web.xml에 ContextLoaderListener 클래스 설정
+        * Ctrl + Space를 통해 contextloaderlistener XML 템플릿을 자동으로 생성한다.
+        * <context-param>의 <param-value>에 Bean 설정 파일 경로를 지정해준다.
+        * ContextLoaderListener 클래스 설정 예시 />
+%%%%%%%%%%(web.xml)
+<!-- needed for ContextLoaderListener -->
+<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:설정 경로</param-value>
+</context-param>
+
+<!-- Bootstraps the root web application context before servlet initialization -->
+<listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>
+%%%%%%%%%%
+    + Web 환경 설정을 위한 Spring Beans 파일 작성
+        * 창 모드를 Spring Perspective로 전환한다.
+        * Web의 Beans 파일 생성 /> 프로젝트 우클릭 > New > Spring Bean Configuration File
+        * Beans 파일의 네임스페이스 설정 /> Namespaces 탭에서 beans, context, mvc를 선택한다.
+    + web.xml에 DispatcherServlet 클래스 설정
+        * Ctrl + Space를 통해 dispatcherservlet XML 템플릿을 자동으로 생성한다.
+        * <servlet>의 <init-param>의 <param-value>에 Web의 Bean 설정 파일 경로를 지정해준다.
+        * <servlet-mapping>의 <url-pattern>에 DispatcherServlet을 실행할 URL 패턴을 지정해준다.
+        * DispatcherServlet 클래스 설정 예시 />
+%%%%%%%%%%(web.xml)
+<!-- The front controller of this Spring Web application -->
+<servlet>
+    <servlet-name>springDispatcherServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:설정 경로</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+
+<!-- Map all requests to the DispatcherServlet for handling -->
+<servlet-mapping>
+    <servlet-name>springDispatcherServlet</servlet-name>
+    <url-pattern>URL 패턴</url-pattern>
+</servlet-mapping>
+%%%%%%%%%%
+
+##################################################################################################
+# Spring MVC 웹 애플리케이션 작성
+##################################################################################################
+
+- EL과 JSTL
+    + EL(Expression Language)의 개요
+        * EL과 JSTL을 사용하면 <% %>와 같은 스트립팅 태그를 JSP에서 없앨 수 있다.
+        * EL 표현식은 중괄호로 묶고 앞에 달러 기호를 붙이며 도트 연산자를 사용한다.
+        * 저장 객체의 출력을 단순화하는 용도로 사용되므로 출력 시 스크립팅을 전혀 쓰지 않는다.
+        * 4가지 Scope(page, request, session, application)의 객체에 접근하여 출력을 처리한다.
+        * 해당 값이 null이거나 공백일 경우에는 내용도 표시하지 않고 에러도 발생하지 않는다.
+        * EL은 JSP에서 기본으로 지원하고 JSTL은 따로 설치해야 한다.
+    + EL과 스크립팅 태그 비교
+        * ${param.key} /> <%= request.getParameter("name") %>
+        * ${attr} /> <% out.println((String)request.getAttribute("attr")) %>
+        * ${obj} /> <% out.println((Class)request.getAttribute("obj")) %>
+        * ${obj.attr} /> 
+%%%%%%%%%%(JSP)
+<% Class obj = (Class)request.getAttribute("obj"); 
+    out.println(obj.getAttr()) %>
+%%%%%%%%%%
+        * ${sessionScope.obj.attr} /> 
+%%%%%%%%%%(JSP)
+<% Class obj = (Class)session.getAttribute("obj"); 
+    out.println(obj.getAttr()) %>
+%%%%%%%%%%
+    + JSTL(JSP Standard Tag Library)의 개요
+        * JSP에서 스크립팅을 사용하지 않으면서 루프를 돌리거나 조건문을 실행하게 해준다.
+        * JSP에서 자주 사용하는 기능을 구현해 놓은 Custom Tag Library 모음이다.
+        * EL을 사용하여 표현한다.
+        * request, response, pageContext, application과 같은 내장 객체에 쉽게 접근할 수 있다.
+    + JSTL의 5가지 라이브러리
+        * 코어(core)
+            ^ 기능 .> 일반 프로그래밍 언어에서 제공하는 다양한 기능을 제공한다.
+            ^ URL 식별자 .> http://java.sun.com/jsp/jstl/core
+            ^ 접두어 .> c
+        * 포맷팅(formatting)
+            ^ 기능 .> 숫자, 날짜, 시간을 포맷팅하는 기능과 국제화, 다국어 기능을 제공한다.
+            ^ URL 식별자 .> http://java.sun.com/jsp/jstl/fmt
+            ^ 접두어 .> fmt
+        * 함수(function)
+            ^ 기능 .> 문자열을 처리하는 함수를 제공한다.
+            ^ URL 식별자 .> http://java.sun.com/jsp/jstl/functions
+            ^ 접두어 .> fn
+        * 데이터베이스(database)
+            ^ 기능 .> 데이터베이스의 데이터를 입력, 수정, 삭제, 조회하는 기능을 제공한다.
+            ^ URL 식별자 .> http://java.sun.com/jsp/jstl/sql
+            ^ 접두어 .> sql
+        * XML처리(xml)
+            ^ 기능 .> XML 문서를 처리할 때 필요한 기능을 제공한다.
+            ^ URL 식별자 .> http://java.sun.com/jsp/jstl/xml
+            ^ 접두어 .> x
+    + JSTL의 사용
+        * 선언부에 <%@ taglib prefix="" uri="" %>를 설정하면 해당 라이브러리를 사용할 수 있다.
+        * 라이브러리의 태그 사용은 <prefix:tag /> 형식을 통해 사용할 수 있다.
+    + JSTL Core 태그
+        * JSTL 태그 라이브러리 중 가장 많이 사용하는 라이브러리이다.
+        * 선언 /> <%@ taglib preifx="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        * 변수 지원 태그
+            ^ set .> JSP에서 사용될 변수를 설정한다.
+            ^ remove .> 설정한 변수를 제거한다.
+        * 흐름 제어 태그
+            ^ if .> 조건에 따라 내부 코드를 수행한다.
+            ^ choose .> 다중 조건을 처리할 때 사용한다.
+            ^ forEach .> 컬렉션이나 Map의 각 항목을 처리할 때 사용한다.
+            ^ forTokens .> 구분자로 구분된 각각의 토큰을 처리할 때 사용한다.
+        * URL 처리 태그
+            ^ import .> URL을 사용하여 다른 자원의 결과를 삽입한다.
+            ^ redirect .> 지정한 경로로 리다이렉트한다.
+            ^ url .> URL을 재작성한다.
+        * 기타 태그
+            ^ catch .> 에러 처리에 사용된다.
+            ^ out .> JspWriter에 내용을 알맞게 처리한 후 출력한다.
+    + JSTL 라이브러리 설치
+        * mvnrepository에서 jstl와 taglibs 검색해서 의존성을 pom.xml에 추가한다.
+        * JSTL 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
+    <version>1.2</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
+<dependency>
+    <groupId>org.apache.taglibs</groupId>
+    <artifactId>taglibs-standard-impl</artifactId>
+    <version>1.2.5</version>
+</dependency>
+%%%%%%%%%%
+
+- Controller와 JSP 작성
+    + Controller와 JSP 구현 절차
+        * 클라이언트의 요청을 처리할 POJO 형태의 Controller 클래스를 작성
+        * Controller 클래스에 @Controller 어노테이션을 선언
+        * 요청을 처리할 메소드를 작성하고 @RequestMapping 어노테이션을 선언
+        * JSP를 이용한 View 영역의 코드를 작성
+        * Browser 상에서 JSP를 실행
+    + Controller를 위한 핵심 어노테이션
+        * @Controller /> Controller 클래스 정의
+        * @RequestMapping /> HTTP 요청 URL을 처리할 Controller 메소드 정의
+    + View에 데이터를 전달하는 Model 클래스
+        * Model의 메소드 Signature
+            ^ Model addAttribute(String name, Object value)
+            ^ Model addAttribute(Object value)
+            ^ Model addAllAttributes(Map<String, ?> attributes)
+        * Controller에서 Service를 호출한 결과를 받아 View에게 전달하기 위해 결과를 저장한다.
+        * View 코드에서는 name으로 지정한 이름을 통해 value를 사용할 수 있다.
+    + Controller와 JSP 구현
+        * @RequestMapping을 가진 메소드가 JSP 파일명을 반환하면 해당 View를 생성해 보내준다.
+        * @RequestMapping을 가진 메소드는 첫 번째 매개변수로 Model 객체를 받을 수 있다.
+        * JSP 파일 생성 /> 프로젝트의 WebContent 우클릭 > New > Other > Web > JSP File
+        * JSP 파일에서는 Model 객체에서 추가한 속성을 EL로 꺼내 사용할 수 있다.
+
+- Controller와 JSP 작성 심화
+    + Controller를 위한 핵심 어노테이션
+        * @RequestParam /> HTTP 요청에 포함된 파라미터 참조 시 사용
+            ^ URL Query String의 key 값과 받는 매개변수의 name이 같아야 한다.
+        * @ModelAttribute /> HTTP 요청에 포함된 파라미터들을 모델 객체로 바인딩
+            ^ HTTP 요청의 데이터들 name이 모델 객체의 멤버 변수들 name과 모두 같아야 한다.
+        * @PathVariable /> 파라미터를 URL 형식으로 받을 수 있도록 해준다.
+            ^ @RequestMapping에서 URL을 통해 전달받을 파라미터는 중괄호로 묶어줘야 한다.
+    + ViewResolver 설정
+        * ViewResolver는 Controller의 실행 결과를 어떤 View에서 보여줄 것인지를 결정해준다.
+        * InternalResourceViewResolver는 JSP를 사용하여 View를 생성한다.
+        * ViewResolver 설정을 하면 처리 메소드가 확장자를 제외한 JSP 파일명만 반환해도 된다.
+        * prefix 속성 /> Controller가 리턴할 View 이름 앞에 붙을 접두어
+        * suffix 속성 /> Controller가 리턴할 View 이름 뒤에 붙을 확장자
+        * ViewResolver 설정 예시 />
+%%%%%%%%%%(beans-web.xml)
+<bean id="viewResolver"
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/" />
+    <property name="suffix" value=".jsp" />
+</bean>
+%%%%%%%%%%
+    + View에 데이터와 화면 정보를 전달하는 ModelAndView 클래스
+        * ModelAndView의 메소드 Signature
+            ^ ModelAndView(String viewName, String modelName, Object modelObject)
+            ^ ModelAndView(String viewName)
+            ^ void addObject(String attrName, Object attrValue)
+            ^ Map<String, Object> getModel()
+            ^ View getView()
+            ^ void setView(View view)
+            ^ void setViewName(String viewName)
+        * Service에서 전달받은 데이터와 화면 정보를 ModelAndView 객체에 저장한다.
+        * ModelAndView 클래스의 생성자나 setViewName 메소드를 이용해 View 이름을 지정한다.
+        * addObject 메소드를 이용해 View에 전달한 데이터를 저장할 수 있다.
+    + web.xml에 CharacterEncodingFilter 클래스 설정
+        * 한글 값을 받기 위해서는 요청 데이터를 인코딩 해주는 기능을 설정해야 한다.
+        * CharacterEncodingFilter 클래스 설정 예시 />
+%%%%%%%%%%(web.xml)
+<!-- CharacterEncoding Filter -->
+<filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+        <param-name>encoding</param-name>
+        <param-value>UTF-8</param-value>
+    </init-param>
+</filter>
+<filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>URL 패턴</url-pattern>
+</filter-mapping>
+%%%%%%%%%%
+
+- Controller와 JSP를 위한 기능들
+    + Controller를 위한 기능들
+        * View 이름을 통한 리다이렉트 처리 -> "redirect:리다이렉트할 View 경로"
+        * 메소드에서 @RequestParam으로 URL Query 받기 -> (@RequestParam String queryId)
+        * ModelAndView로 여러 객체 전달 -> Map 객체에 여러 객체들 넣은 후 Map 객체를 전달
+        * 메소드에서 @ModelAttribute로 HTTP 데이터들을 받기 -> (@ModelAttribute Class object)
+        * 메소드에서 @PathVariable로 URL 파라미터 받기 -> (@PathVariable String paramId)
+    + JSP를 위한 기능들
+        * 리다이렉트 처리 -> <% response.sendRedirect("리다이렉트 경로") %>
+        * JSTL Core 태그의 forEach 처리 -> <c:forEach var="객체" items="${리스트}">
+        * Map 객체에 들어있는 객체 사용 -> ${map.object}
+        * JSTL Core 태그의 choose 처리 ->
+%%%%%%%%%%(JSP)
+<c:choose>
+    <c:when test="${answer eq result}">
+        실행될 JSP
+    </c:when>
+    <c:otherwise>
+        실행될 JSP
+    </c:otherwise>
+</c:choose>
+%%%%%%%%%%
+
+- Spring MVC의 예외 처리
+    + @ExceptionHandler 어노테이션의 사용
+        * 컨트롤러의 에러 처리 메소드 예시 /> String handleException(Exception e)
+        * 컨트롤러의 메소드에서 예외가 발생했을 때 예외 처리를 할 수 있다.
+        * 예외가 발생했을 때 Type과 Message를 보여주는 페이지(viewError.jsp)를 작성해야 한다.
+    + Error Page 작성
+        * exception 객체 사용을 위한 page 태그 추가 /> <%@ page isErrorPage = "true" %>
+        * exception 객체의 타입 출력 /> <%= exception.getClass().getName() %>
+        * exception 객체의 메시지 출력 /> <%= exception.getMessage() %>
+        * Home 페이지의 경로 /> ${pageContext.request.contextPath}
+
+##################################################################################################
+# RESTful 웹 서비스 개요 및 환경설정
+##################################################################################################
+
+- RESTful 웹 서비스 개요
+    + Open API(Application Programming Interface)란?
+        * 프로그래밍에서 사용할 수 있는 개방되어 있는 상태의 인터페이스
+        * 웹 서버에서 가지고 있는 데이터를 외부 응용 프로그램에서 사용할 수 있게 제공한다.
+        * 대부분의 Open API는 REST 방식으로 지원되고 있다.
+    + REST(REpresentational State Transfer)란?
+        * HTTP URI + HTTP Method /> URI로 자원을 명시하고 Method로 자원의 제어 명령을 내린다.
+        * HTTP 프로토콜에 지정된 4개의 메소드
+            ^ POST .> Create(Insert)
+            ^ GET .> Read(Select)
+            ^ PUT .> Update or Create
+            ^ DELETE .> Delete
+    + RESTful API란?
+        * HTTP와 URI 기반으로 자원에 접근할 수 있도록 제공하는 애플리케이션 개발 인터페이스
+        * REST의 원리를 따르는 시스템을 RESTful이란 용어로 지칭한다.
+        * RESTful API는 4가지 메소드를 사용하여 CRUD를 처리하며 URI는 자원을 나타낸다.
+
+- JSON과 XML
+    + RESTful 웹 서비스와 JSON/XML
+        * 클라이언트가 데이터를 요청했을 때 서버는 JSON이나 XML 형식으로 데이터를 보낸다.
+        * 클라이언트의 브라우저는 JSON이나 XML 데이터를 받아 가공해서 사용할 수 있다.
+    + JSON(JavaScript Object Notation)이란?
+        * XML에 비해서 경량(lightweight)의 데이터 교환 형식이다.
+        * Javascript에서 객체를 만들 때 사용하는 표현식을 의미한다.
+        * JSON 표현식은 사람과 기계 모두 이해하기 쉬우며 용량이 작아 많이 사용된다. 
+        * 특정 언어에 종속되지 않으며 대부분의 언어에서 JSON 핸들링 라이브러리를 제공한다.
+    + JSON 형식
+        * name-value 형식의 쌍 /> 여러 가지 언어에서 Object, HashTable, Struct로 실현된다.
+        * 값들의 순서화된 리스트 형식 /> 여러 가지 언어에서 Array, List로 실현된다.
+    + Java의 JSON 라이브러리 Jackson
+        * 고성능 JSON 처리 라이브러리이다.
+        * JSON 형태를 Java 객체로, Java 객체를 JSON 형태로 변환해준다.
+    + XML(eXtensible Markup Language)이란?
+        * XML은 데이터를 저장하고 교환하기 위한 언어이다.
+        * 인간과 기계 모두에게 읽기 편한 언어이다.
+        * XML은 데이터의 구조와 의미를 설명한다.
+        * 사용자가 마음대로 Tag를 정의할 수 있다.
+    + XML의 Tree 구조
+        * XML 문서는 root에서 시작해서 leaves로 뻗어가는 트리 구조이다.
+        * XML 버전과 문자 인코딩을 정의하는 선언부(prolog)가 있어야 한다.
+        * XML는 어떠한 데이터를 설명하기 위해 이름을 임의로 작성한 Tag로 데이터를 감싼다.
+        * XML 선언부의 예시 /> <? xml version="1.0" encoding="UTF-8" ?>
+
+- Spring MVC 기반 RESTful 웹 서비스 환경설정
+    + Jackson 라이브러리 설치
+        * mvnrepository에서 jackson-mapper와 gson 검색해서 의존성을 pom.xml에 추가한다.
+        * Jackson 라이브러리 의존성 추가 예시 />
+%%%%%%%%%%(pom.xml)
+<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+<dependency>
+    <groupId>org.codehaus.jackson</groupId>
+    <artifactId>jackson-mapper-asl</artifactId>
+    <version>1.9.13</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.8.5</version>
+</dependency>
+%%%%%%%%%%
+    + web.xml의 DispatcherServlet의 url-pattern 변경 -> <url-pattern>/<url-pattern>
+    + Spring Bean 설정 파일에 설정 추가
+        * Spring MVC에 필요한 Bean들 자동으로 등록해주는 태그 /> <mvc:annotation-driven />
+        * DispatcherServlet의 url-pattern으로 인한 태그 /> <mvc:default-servlet-handler />
+            ^ DispatcherServlet의 url-pattern을 "/"와 같이 설정하면 문제가 발생한다.
+            ^ 문제는 tomcat의 server.xml에 정의된 url-pattern "/"를 무시하게 된다.
+            ^ url-pattern을 재정의하게 되어 DefaultServlet이 더 이상 동작할 수 없는 것이다.
+            ^ 이를 해결하기 위해서 Spring에서는 default-servlet-handler 태그를 지원한다.
+    + Spring MVC 기반 RESTful 웹 서비스 구현 절차
+        * RESTful 웹 서비스를 처리할 RestfulController 클래스 작성 및 Spring Bean 등록
+        * 요청을 처리할 메소드에 @RequestMapping, @RequestBody, @ResponseBody 선언
+        * REST Client Tool(Postman)을 사용하여 각각의 메소드 테스트
+        * Ajax 통신을 하여 RESTful 웹 서비스를 호출하는 HTML 페이지 작성
+    + REST API 테스트를 위한 Chrome 확장 프로그램 설치 -> Chrome에서 Postman 프로그램 추가
+
+##################################################################################################
+# Ajax와 jQuery 개요
+##################################################################################################
+
+- Ajax 개요
+    + Ajax(Asynchronous Javascript and Xml)란?
+        * 웹2.0 실현의 핵심 기능으로 고수준 인터페이스를 제공하도록 도와주는 기술의 묶음이다.
+        * HTML과 Javascript, XML, XMLHttpRequest 객체를 조합해서 사용하는 새로운 접근법이다.
+        * 비동기적이라는 의미는 데이터가 로드되는 동안에도 페이지를 사용할 수 있다는 것이다.
+        * 서버가 데이터를 전달해 주면 Ajax 이벤트가 발생하여 수신한 데이터를 처리하게 된다.
+    + Ajax의 활용 예시 -> 라이브 검색, 사용자 정보 표시
+    + XMLHttpRequest(XHR) 객체 사용법
+        * XMLHttpRequest 객체 생성한다. /> Request를 보낼 준비
+        * Callback 함수를 생성한다. /> 서버에서 Response가 왔을 때 실행되는 함수
+        * Request를 Open 한다. /> HTTP method와 호출할 Server의 url 정보를 전달
+        * Request를 Send 한다. /> Request를 전송
+        * Javascript를 이용한 XHR 객체 사용 예시 />
+%%%%%%%%%%(Javascript)
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = functon() {
+    if(xhr.readyState == 4) {
+        var div = document.getElementById('div');
+        div.innerHTML = xhr.responseText;
+    }
+}
+xhr.open('GET', 'ajax.do');
+xhr.send();
+%%%%%%%%%%
+    + jQuery를 이용하여 Ajax 통신을 하는 경우
+        * 순수 Javascript로 Ajax 코드를 작성은 코딩량도 많고 브라우저 별로 구현도 달라야 한다.
+        * jQuery를 이용하면 더 적은 코딩량으로도 크로스 브라우징이 가능하다.
+
+- jQuery 개요
+    + jQuery란?
+        * Javascript를 좀 더 쉽게 사용하도록 만들어진 Library로서 가볍고 빠르며 간결하다.
+        * jQuery의 특징 /> 가벼움, 크로스 브라우징, CSS 셀렉터 사용, 메소드 체이닝, Ajax 지원
+    + jQuery 라이브러리 준비 방법
+        * CDN 호스트를 사용하는 방법 /> src="https://code.jquery.com/jquery-1.12.4.min.js"
+        * http://www.jquery.com에서 직접 다운로드 하여 사용하는 방법
+    + jQuery가 제공하는 기능
+        * HTML 엘리먼트 선택(Selector)
+        * HTML 엘리먼트의 attribute 값 읽기와 쓰기
+        * HTML 엘리먼트 동적으로 조작(Manipulation)
+        * Loop 기능, CSS 조작, Event 처리, Ajax 처리 등
+
+- jQuery가 제공하는 기능
+    + 웹 페이지 로드 이벤트 설정
+        * $(document).read(function() {...});
+        * $(function() {...});
+    + Selector
+        * 태그명으로 선택 /> $("tag");
+        * 클래스명으로 선택 /> $(".class");
+        * ID 명으로 선택 /> $("#id");
+        * 모든 Element 선택하여 CSS 적용 /> $("*").css("cssKey", "cssValue");
+        * 다중 셀렉터 기준으로 엘리먼트 선택 /> $("tag1,tag2,tag3.class");
+        * 태그 요소 중 n번째 이후부터 선택 /> $("tag:gt(n)");
+        * 특정 타입의 input 선택 /> $("input:type");
+    + Attribute 조작
+        * Attribute 쓰기 /> $("selector").attr("attrName", "value");
+        * Attribute 읽기 /> $("selector").attr("attrName");
+        * Attribute 객체로 쓰기 /> $("selector").attr({ attr1:value1, attr2:value2 });
+    + Manipulation
+        * $("selector")append("content") /> element의 content에 인자로 넘어온 내용을 추가
+        * $("content")appendTo("selector") /> target element의 content에 선택된 element를 추가
+        * $("selector").html() /> 선택된 element의 html을 읽기
+        * $("selector").html("htmlString") /> 선택된 element의 html을 쓰기
+    + Loop 기능 -> $("selector").each(function(index, element) {...});
+    + CSS 조작
+        * CSS 쓰기 /> $("selector").css("cssKey", "cssValue");
+        * CSS 읽기 /> $("selector").css("cssKey");
+        * CSS 객체로 쓰기 /> $("selector").css({ "css1":"value1", "css2":"value2" });
+        * element에 클래스 추가 /> $("selector").addClass("class");
+    + Event 처리
+        * 이벤트 핸들러 추가 /> $("selector").on("event", function() {...});
+        * 객체로 이벤트 핸들러 추가 /> $("selector").on({ event1:func1, event2:func2 });
+    + Ajax 처리 -> $.ajax({ Ajax 설정 정보 })
+        * Ajax 설정 정보 /> url, type, contentType, dataType, error, success
+            ^ url .> 데이터를 요청할 서버의 URL
+            ^ type .> 요청할 HTTP 메소드 타입
+            ^ contentType .> 요청할 HTTP 헤더에 들어가는 Content-Type
+            ^ dataType .> 요청할 HTTP에 들어갈 데이터 타입
+            ^ error .> 에러 발생하면 실행될 에러 처리 함수
+            ^ success .> 정상적으로 성공하면 실행될 처리 함수
+
+##################################################################################################
+# RESTful 웹 서비스 애플리케이션 작성
+##################################################################################################
+
+- Spring MVC 기반 RESTful 웹 서비스 구현
+    + RESTful Controller를 위한 핵심 어노테이션
+        * Spring MVC에서는 XML이나 JSON 데이터를 Java 객체로 송수신할 수 있는 기능을 제공한다.
+        * @RequestMapping /> value로 경로를 지정하고 method로 RequestMethod의 상수를 지정한다.
+        * @RequestBody /> HTTP Request Body를 Java 객체로 전달 받을 수 있다.
+        * @ResponseBody /> Java 객체를 HTTP Response Body로 전송할 수 있다.
+    + RESTful Controller를 위한 @ResponseBody의 사용
+        * MappingJacksonHttpMessageConverter가 반환 값을 JSON으로 변환하는 작업을 처리한다.
+        * Controller 메소드의 반환 타입을 Map으로 지정하면 간단한 JSON으로 변환이 된다.
+        * @ResponseBody가 없다면 ViewResolver에 의해 선택된 JSP 파일로 객체를 처리해야 한다.
+    + RESTful Controller를 위한 @RequestBody의 사용
+        * 클라이언트의 요청 헤더 설정 /> "Content-Type: application/json;charset=UTF-8"
+        * @RequestMapping의 헤더 설정 /> headers = { "Content-type=application/json" }
+        * 클라이언트의 요청 데이터가 JSON일 때 Java 객체로 변환하여 받게 해준다.
+        * 요청 데이터 JSON의 키 값과 Java 객체의 멤버 변수 이름이 모두 일치해야 한다.
+
+- XML 응답을 주는 RESTful 웹 서비스 개요
+    + JAXB(Java Architecture for XML Binding)란?
+        * Java 객체를 XML로 변환(직렬화, Marshalling) 해줄 수 있다.
+        * XML을 Java 객체로 변환(역직렬화, Unmarshalling) 해줄 수 있다.
+        * Java SE에 포함되어 있는 기능이므로 라이브러리를 따로 설치할 필요는 없다.
+    + JAXB의 핵심 어노테이션
+        * @XmlRootElement /> 클래스에 사용하여 XML의 Root Element 이름을 정의한다.
+        * @XmlElement /> 변수나 setter 메소드에 사용하여 XML의 Element 이름을 정의한다.
+        * 어노테이션에서 name 속성을 이용하여 매핑될 XML의 태그명을 설정해줄 수 있다.
+    + JAXB을 사용한 RESTful 웹 서비스 구현 절차
+        * Java 객체를 XML로 변환하기 위해 어노테이션을 선언한 VOXML 클래스를 작성
+        * RestfulController 클래스에 처리 메소드 작성하고 어노테이션을 선언
+        * REST Client Tool을 이용해 메소드를 테스트
+
+##################################################################################################
+##################################################################################################
