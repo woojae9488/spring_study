@@ -13,3 +13,7 @@ Tacademy Spring Framework Lecture - Spring MVC Web Application
 ### SpringRedisPrj
 
 Spring Application with Redis
+
+### SpringKafkaPrj
+
+Spring Application with Kafka
