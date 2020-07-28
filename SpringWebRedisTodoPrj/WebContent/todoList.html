@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Todo service</title>
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- Bootstrap-Vue -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <!-- Axios Instance -->
+    <script type="text/javascript">
+      function axiosInstance() {
+        return axios.create({
+          baseURL: "http://localhost:8080/SpringWebRedisTodoPrj",
+          timeout: 5000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app" class="p-5">
+      <b-card
+        :header="title"
+        header-tag="h2"
+        border-variant="success"
+        header-border-variant="success"
+      >
+        <b-table
+          :items="todoList"
+          :fields="todoTable.fields"
+          :current-page="todoTable.currentPage"
+          :per-page="todoTable.perPage"
+          @row-clicked="onClickTodoRow"
+          hover
+          show-empty
+        >
+          <template v-slot:cell(delete)="row">
+            <b-button
+              size="sm"
+              @click="deleteTodoData(row.item)"
+              variant="danger"
+            >
+              Delete
+            </b-button>
+          </template>
+          <template v-slot:table-colgroup="scope">
+            <col
+              v-for="field in scope.fields"
+              :key="field.key"
+              :style="{ width: field.key === 'title' ? '140px' : '50px' }"
+            />
+          </template>
+        </b-table>
+        <b-container fluid class="mt-5 p-1 border border-primary">
+          <b-row>
+            <b-col class="mu-4" align="center">
+              <h4 class="my-3">Todo Form</h4>
+            </b-col>
+          </b-row>
+
+          <b-row>
+            <b-col align="center">
+              <b-container fluid>
+                <b-form @submit.prevent="submitTodoData">
+                  <b-row class="my-2" align-v="center">
+                    <b-col offset-sm="1" sm="2">
+                      <label for="todo-title">Title :</label>
+                    </b-col>
+                    <b-col sm="8">
+                      <b-form-input
+                        id="todo-title"
+                        v-model="formData.title"
+                        placeholder="Input Todo Title"
+                        trim
+                        required
+                      ></b-form-input>
+                    </b-col>
+                  </b-row>
+                  <b-row class="my-2" align-v="center">
+                    <b-col offset-sm="1" sm="2">
+                      <label for="todo-deadline">Deadline :</label>
+                    </b-col>
+                    <b-col sm="6">
+                      <b-form-input
+                        id="todo-deadline"
+                        type="datetime-local"
+                        v-model="formData.deadline"
+                        required
+                      ></b-form-input>
+                    </b-col>
+                  </b-row>
+                  <b-row class="my-2" align-v="center">
+                    <b-col offset-sm="1" sm="2">
+                      <label for="todo-contents">Contents :</label>
+                    </b-col>
+                    <b-col sm="8">
+                      <b-form-textarea
+                        id="todo-contents"
+                        v-model="formData.contents"
+                        placeholder="Input Todo Contents"
+                        rows="2"
+                        max-rows="5"
+                        trim
+                        required
+                      ></b-form-textarea>
+                    </b-col>
+                  </b-row>
+                  <b-row class="mt-4 mb-2">
+                    <b-col offset-sm="4" sm="2" align="left">
+                      <b-button
+                        :name="submitButtonName"
+                        @click="submitTodoData"
+                        variant="outline-info"
+                        size="sm"
+                        pill
+                      >
+                        {{submitButtonName}}
+                      </b-button>
+                    </b-col>
+                    <b-col sm="2">
+                      <b-button
+                        name="clear"
+                        @click="clearTodoData"
+                        variant="outline-danger"
+                        size="sm"
+                        pill
+                      >
+                        Clear
+                      </b-button>
+                    </b-col>
+                  </b-row>
+                </b-form>
+              </b-container>
+            </b-col>
+          </b-row>
+        </b-container>
+      </b-card>
+    </div>
+    <script type="text/javascript">
+      new Vue({
+        el: "#app",
+        async created() {
+          await this.fillTodoList();
+        },
+        computed: {
+          submitButtonName() {
+            return this.formData.createTime == "" ? "Add" : "Update";
+          },
+        },
+        data: {
+          title: "TodoList Management",
+          todoTable: {
+            fields: ["title", "deadline", "delete"],
+            currentPage: 1,
+            perPage: 5,
+          },
+          todoList: [],
+          formData: {
+            createTime: "",
+            title: "",
+            contents: "",
+            deadline: "",
+          },
+        },
+        methods: {
+          async fillTodoList() {
+            const apiResult = await axiosInstance().get("/todos");
+            this.todoList = apiResult.data.data;
+          },
+          async submitTodoData() {
+            if (this.formData.createTime == "") {
+              this.formData.createTime = Date.now();
+              await axiosInstance().post("/todos", this.formData);
+            } else {
+              await axiosInstance().put("/todos", this.formData);
+            }
+            this.clearTodoData();
+            await this.fillTodoList();
+          },
+          clearTodoData() {
+            this.formData.createTime = "";
+            this.formData.title = "";
+            this.formData.contents = "";
+            this.formData.deadline = "";
+          },
+          async deleteTodoData(item) {
+            await axiosInstance().delete(`/todos/${item.createTime}`);
+            await this.fillTodoList();
+          },
+          onClickTodoRow(item) {
+            Object.assign(this.formData, item);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

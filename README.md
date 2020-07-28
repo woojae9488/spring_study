@@ -2,11 +2,11 @@
 
 ---
 
-### SpringPrj
+### SpringPrj & SpringPrj2
 
 Tacademy Spring Framework Lecture - Spring Application
 
-### SpringWebPrj
+### SpringWebPrj & SpringWebPrj2
 
 Tacademy Spring Framework Lecture - Spring MVC Web Application
 
@@ -17,3 +17,7 @@ Spring Application with Redis
 ### SpringKafkaPrj
 
 Spring Application with Kafka
+
+### SpringWebRedisTodoPrj
+
+Spring Todo Web Application with Redis
