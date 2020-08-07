@@ -2,4 +2,5 @@
 Servers/
 .metadata/
 spring/
-temp/
+Temp*
+temp*

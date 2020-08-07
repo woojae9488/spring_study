@@ -21,3 +21,7 @@ Spring Application with Kafka
 ### SpringWebRedisTodoPrj
 
 Spring Todo Web Application with Redis
+
+### SpringWebSocketPrj
+
+Spring Application with WebSocket(STOMP)

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Chatting Room</title>
+<!-- Vue -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+<!-- Axios -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- SockJS -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script type="text/javascript">
+	function axiosInstance() {
+		return axios.create({
+			baseURL : "http://localhost:8080/SpringWebSocketPrj",
+			timeout : 5000,
+			headers : {
+				"Content-Type" : "application/json",
+			},
+		});
+	}
+</script>
+</head>
+
+<body>
+	<div id="app" class="p-5">
+		<h2>{{title}}</h2>
+		<div class="content">
+			<ul class="chat_box">
+				<li v-for="chat in chatList">{{chat}}</li>
+			</ul>
+			<input type="text" v-model="message" @keyup.enter="sendMessage">
+			<button class="send" @click="sendMessage">send</button>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+      new Vue({
+        el: "#app",
+        async created() {
+          await this.fillRoomData();
+          this.createSocket();
+        },
+        data: {
+          title: "",
+          sock: {},
+          room: {},
+          user: "",
+          message: "",
+          chatList: [],
+        },
+        methods: {
+        	async fillRoomData() {
+        		const roomId =  new URLSearchParams(location.search).get("room_id");
+        		const apiResult = await axiosInstance().get(`/chat/rooms/${roomId}`);
+                this.room = apiResult.data.room;
+                this.user = apiResult.data.member;
+                this.title = `Welcome to ${this.room.name}`;
+        	},
+        	createSocket() {
+        		this.sock = new SockJS("/SpringWebSocketPrj/ws/chat");
+        		this.sock.onopen = this.sendSocketCreated;
+        	},
+        	sendSocketCreated(){
+        		this.sock.send(JSON.stringify({chatRoomId : this.room.id, type: 'JOIN', writer : this.user}));
+        		this.sock.onmessage = this.onSocketReceived;
+        	},
+        	onSocketReceived(e){
+        		const content = JSON.parse(e.data);
+				this.chatList.push(`${content.message}(${content.writer})`);
+        	},
+        	sendMessage() {
+        		this.sock.send(JSON.stringify({chatRoomId: this.room.id, type: 'CHAT', message: this.message, writer: this.user}))
+        		this.message = "";
+        	},
+        }
+      });
+    </script>
+</body>
+
+</html>
