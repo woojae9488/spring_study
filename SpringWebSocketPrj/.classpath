@@ -38,5 +38,14 @@
 			<attribute name="m2e-apt" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/김우재/.m2/repository/org/springframework/spring-messaging/5.2.7.RELEASE/spring-messaging-5.2.7.RELEASE.jar" sourcepath="C:/Users/김우재/.m2/repository/org/springframework/spring-messaging/5.2.7.RELEASE/spring-messaging-5.2.7.RELEASE-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="org.springframework"/>
+			<attribute name="maven.artifactId" value="spring-messaging"/>
+			<attribute name="maven.version" value="5.2.7.RELEASE"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

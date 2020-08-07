@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chatting Room List</title>
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+      function axiosInstance() {
+        return axios.create({
+          baseURL: "http://localhost:8080/SpringWebSocketPrj",
+          timeout: 5000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="app" class="p-5">
+      <h2>{{title}}</h2>
+      <ul>
+        <li v-for="room in roomList">
+          <a :href="getRoomUrl(room.id)">{{room.name}}</a>
+        </li>
+      </ul>
+    </div>
+
+    <script type="text/javascript">
+      new Vue({
+        el: "#app",
+        async created() {
+          await this.fillRoomList();
+        },
+        data: {
+          title: "Chatting Room List",
+          roomList: [],
+        },
+        methods: {
+          async fillRoomList() {
+            const apiResult = await axiosInstance().get("/chat/rooms");
+            this.roomList = apiResult.data.rooms;
+          },
+          getRoomUrl(id) {
+            return `/SpringWebSocketPrj/stomp-room.html?room_id=${id}`;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -36,7 +36,7 @@ public class ChatRoom {
 	public void handleMessage(WebSocketSession session, ChatMessage chatMessage, ObjectMapper objectMapper) {
 		if (chatMessage.getType() == MessageType.JOIN) {
 			join(session);
-			chatMessage.setMessage(chatMessage.getWriter() + "was join this room.");
+			chatMessage.setMessage(chatMessage.getWriter() + " was join this room.");
 		}
 		broadcast(chatMessage, objectMapper);
 	}
