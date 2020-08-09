@@ -1,0 +1,42 @@
+package sec11.ex01;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet("*.do")
+public class TestServlet3 extends HttpServlet {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+
+		PrintWriter out = response.getWriter();
+		String context = request.getContextPath();
+		String url = request.getRequestURL().toString();
+		String mapping = request.getServletPath();
+		String uri = request.getRequestURI();
+
+		out.println("<html>");
+		out.println("<head>");
+		out.println("<title>Test Servlet3</title>");
+		out.println("</head>");
+		out.println("<body bgcolor='red'>");
+		out.println("<b>This is TestServlet3</b><br>");
+		out.println("<b>Context name : " + context + "</b><br>");
+		out.println("<b>Full path : " + url + "<b><br>");
+		out.println("<b>Mapping name : " + mapping + "<b><br>");
+		out.println("<b>URI : " + uri + "<b>");
+		out.println("</body>");
+		out.println("</html>");
+		out.close();
+	}
+}

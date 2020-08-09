@@ -1,0 +1,1 @@
+memberRegister memberLookup memberUpdate, orderLookup orderRegister orderUpdate orderCancel, goodsLookup goodsRegister goodsUpdate goodsCancel

@@ -25,3 +25,7 @@ Spring Todo Web Application with Redis
 ### SpringWebSocketPrj
 
 Spring Application with WebSocket(STOMP)
+
+### WebServletPrj
+
+Book "The skill of dealing with Java Web" - Servlet Application
